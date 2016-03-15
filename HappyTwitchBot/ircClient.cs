@@ -9,12 +9,16 @@ namespace HappyTwitchBot
         private string username;
         private string channel;
 
-        private TcpClient tcpClient;
+        public TcpClient tcpClient;
+        public int ReadStreamEnabled;
         private StreamReader inputStream;
         private StreamWriter outputStream;
 
         public ircClient()
-        { }
+        {
+            ReadStreamEnabled = 0;
+        }
+
 
         public ircClient(string ip, int port, string username, string password)
         {

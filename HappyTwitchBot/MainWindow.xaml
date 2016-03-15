@@ -5,29 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HappyTwitchBot"
         mc:Ignorable="d"
-        Title="HappyTwitchBot" Height="350" Width="525" ResizeMode="CanMinimize">
+        Title="HappyTwitchBot" Height="533.333" Width="878.921" ResizeMode="CanMinimize">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
     </Window.Resources>
 
     <Grid>
-        <Button x:Name="b_connect" Content="Connect" HorizontalAlignment="Left" Margin="29,66,0,0" VerticalAlignment="Top" Width="75" FontSize="14 px" BorderThickness="1" 
-                Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="b_connect_Click"/>
-        <TextBlock x:Name="tbl_dummy_username" HorizontalAlignment="Left" Text="Username" Margin="14,12,0,0" FontStyle="Italic" VerticalAlignment="Top" 
-                   Foreground="Gray" Visibility="{Binding ElementName=tb_username, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" Width="116"/>
-        <TextBox x:Name="tb_username" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Background="Transparent"
-                 IsHitTestVisible="True" TextChanged="tb_username_TextChanged" GotFocus="tb_username_GotFocus"/>
-        <TextBlock x:Name="tbl_dummy_password" HorizontalAlignment="Left" Text="Password" Margin="14,40,0,0" FontStyle="Italic" VerticalAlignment="Top" 
-                   Foreground="Gray" Visibility="{Binding ElementName=tb_password, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" Width="116"/>
-        <TextBox x:Name="tb_password" HorizontalAlignment="Left" Height="23" Margin="10,38,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Background="Transparent"
-                 Width="120" IsHitTestVisible="True" TextChanged="tb_username_TextChanged" GotFocus="tb_password_GotFocus"/>
-        <TextBlock x:Name="tbl_dummy_channel" HorizontalAlignment="Left" Text="Channel" Margin="139,12,0,0" FontStyle="Italic" VerticalAlignment="Top" 
-                   Foreground="Gray" Visibility="{Binding ElementName=tb_channel, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" Width="116"/>
-        <TextBox x:Name="tb_channel" HorizontalAlignment="Left" Height="23" Margin="135,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Background="Transparent" 
-                 GotFocus="tb_channel_GotFocus"/>
-        <Button x:Name="testbutton" Content="testbutton" HorizontalAlignment="Left" Margin="432,233,0,0" VerticalAlignment="Top" Width="75" FontSize="14 px" BorderThickness="1" 
+        <Button x:Name="testbutton" Content="testbutton" HorizontalAlignment="Left" Margin="111,350,0,0" VerticalAlignment="Top" Width="75" FontSize="14 px" BorderThickness="1" 
                 Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="testbutton_Click"/>
+        <Grid x:Name="g_connect" HorizontalAlignment="Left" Height="93" Margin="10,10,0,0" VerticalAlignment="Top" Width="259">
+            <Button x:Name="b_connect" Content="Connect" HorizontalAlignment="Left" Margin="7,63,0,0" VerticalAlignment="Top" Width="245" FontSize="14 px" BorderThickness="1" 
+        		Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="b_connect_Click"/>
+            <TextBox x:Name="tb_username" HorizontalAlignment="Left" Height="23" Margin="7,7,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Background="Transparent"
+        		IsHitTestVisible="True" TextChanged="tb_username_TextChanged" GotFocus="tb_username_GotFocus"/>
+            <TextBox x:Name="tb_password" HorizontalAlignment="Left" Height="23" Margin="7,35,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Background="Transparent"
+        		Width="120" IsHitTestVisible="True" TextChanged="tb_username_TextChanged" GotFocus="tb_password_GotFocus"/>
+            <TextBox x:Name="tb_channel" HorizontalAlignment="Left" Height="23" Margin="132,7,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Background="Transparent" 
+        		GotFocus="tb_channel_GotFocus"/>
+            <CheckBox x:Name="cb_remember" Content="Remember Me" HorizontalAlignment="Left" Margin="136,39,0,0" VerticalAlignment="Top"/>
+        </Grid>
+        <TextBox x:Name="tb_test" HorizontalAlignment="Left" Height="457" Margin="274,20,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="589"/>
+        <TextBox x:Name="tb_welcomemsg" HorizontalAlignment="Left" Height="84" Margin="18,128,0,0" TextWrapping="Wrap" Text="Welcome to the channel!" VerticalAlignment="Top" Width="243"/>
+        <Label x:Name="label" Content="Welcome Message" HorizontalAlignment="Left" Margin="18,103,0,0" VerticalAlignment="Top" Width="243"/>
 
     </Grid>
 </Window>
