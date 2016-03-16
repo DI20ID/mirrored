@@ -34,21 +34,20 @@ namespace HappyTwitchBot
             g_connect.IsEnabled = false;
 
 
-            sUsername = "secrethappyliooon";
-            sPassword = "oauth:fb54elmxy4hfrcasoph8rxux7blv4h";
+            sUsername = "secrethappyliooon";        //temporary username - DELETE ON FINAL RELEASE
+            sPassword = "oauth:fb54elmxy4hfrcasoph8rxux7blv4h";         //temporary password - DELETE ON FINAL RELEASE
             //sUsername = tb_password.Text;
             //sPassword = tb_password.Text;
             
             irc = new ircClient("irc.twitch.tv", 6667, sUsername, sPassword);
             irc.joinRoom("happyliooon");
             int sleep = 0;
-            int connected = 0;
-            int fail = 0;
+            bool connected = false;
 
-            while (connected == 0 && sleep <= 1000)
+            while (connected == false && sleep <= 1000)
             {
                 if(irc.tcpClient.Available!=0)
-                { connected = 1; }
+                { connected = true; }
                 else
                 {
 
@@ -57,8 +56,9 @@ namespace HappyTwitchBot
                 }
             }
 
-            if (connected == 1)
+            if (connected == true)
             {
+                /*
 
                 tb_test.Text = "";
 
@@ -67,7 +67,17 @@ namespace HappyTwitchBot
                    
                     tb_test.Text += "\n" + irc.readMessage();
                 }
+                */
+                /*
+                for (int i = 0; i < 1; i++)
+                {
+                    tb_test.Text += "\n" + irc.readMessage();
+                }
+                */
+                Thread ircThread = new Thread(irc.ContinousRead);
+                ircThread.Start();
 
+                
             }
             else
             {
@@ -134,11 +144,15 @@ namespace HappyTwitchBot
 
         #endregion
 
-
         #region FUNCTIONS
 
 
 
         #endregion
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+    }
     }
 }

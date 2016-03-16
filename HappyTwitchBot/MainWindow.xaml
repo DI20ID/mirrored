@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HappyTwitchBot"
         mc:Ignorable="d"
-        Title="HappyTwitchBot" Height="533.333" Width="878.921" ResizeMode="CanMinimize">
+        Title="HappyTwitchBot" Height="533.333" Width="878.921" ResizeMode="CanMinimize" Closing="Window_Closing">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
