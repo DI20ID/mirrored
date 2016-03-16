@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Net.Sockets;
+using System.Security;
 using System.Threading;
 using System.Windows;
 
@@ -11,11 +12,11 @@ namespace HappyTwitchBot
         private string username;        //irc connect username
         private string channel;         //irc channel to connect to (gets assigned in "public void joinRoom(string channel)"
         private string ircString;       //string for continously reading irc messages
-        
 
         public TcpClient tcpClient;         //tcpClient for TCP connection
         public bool ReadStreamEnabled;       //bool to enable continous Stream Reading
         public bool Initialization;            // bool for initial stream read
+
         private StreamReader inputStream;      //irc input Stream (Read)
         private StreamWriter outputStream;      //irc output Stream (Write)
 
@@ -67,11 +68,9 @@ namespace HappyTwitchBot
         public void ContinousRead()                     // continously read irc input stream as long as ReadStream Enabled == true
         {
             ircString = "";
-
-            while(Initialization == true)
+            while (Initialization)
             {
-                Thread.Sleep(5);
-                ircString = readMessage();
+                ircString = inputStream.ReadLine();
                 /*
 
 
@@ -93,22 +92,30 @@ namespace HappyTwitchBot
                 
             }
 
+            string pattern = inputStream.ReadLine();
 
-            while (ReadStreamEnabled == true)
+            if (ReadStreamEnabled)
             {
-                Thread.Sleep(5);
-                ircString = readMessage();
+                Thread patternThread = new Thread(ContinousRead);
+                patternThread.Start();
 
+                if (pattern.Contains("!hello"))
+                {
+                    sendChatMessage("*waves*");
+                }
                 /*
 
 
-                ADD CONTINOUS CHAT PATTERN CHECKS
+                ADD CHAT PATTERN CHECKS
 
 
                 */
             }
+        }
 
-            Initialization = false;
+        public void PatternCheck(string pattern)
+        {
+
         }
     }
 }
