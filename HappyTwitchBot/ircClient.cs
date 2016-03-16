@@ -68,7 +68,7 @@ namespace HappyTwitchBot
         public void ContinousRead()                     // continously read irc input stream as long as ReadStream Enabled == true
         {
             ircString = "";
-            while (Initialization)
+            while (Initialization)                      //initial stream read to get userlist
             {
                 ircString = inputStream.ReadLine();
                 /*
@@ -78,7 +78,13 @@ namespace HappyTwitchBot
 
 
                 */
-                if(ircString.Contains(ircPatterns.loginerror))
+                /*
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Markus.LIONNET\Desktop\testread.txt", true))
+                {
+                    file.WriteLine(ircString);
+                }
+                */
+                if (ircString.Contains(ircPatterns.loginerror))
                 {
                     MessageBox.Show("Login Failed. \nWrong password and/or username!\n\nDetails: " + ircString, "Error");
                     Initialization = false;
@@ -98,13 +104,18 @@ namespace HappyTwitchBot
             {
                 Thread patternThread = new Thread(ContinousRead);
                 patternThread.Start();
-
+                /*
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Markus.LIONNET\Desktop\testread.txt",true))
+                {
+                    file.WriteLine(pattern);
+                }
+                /*
                 if (pattern.Contains("!hello"))
                 {
                     sendChatMessage("*waves*");
                 }
-                /*
-
+                
+                
 
                 ADD CHAT PATTERN CHECKS
 
