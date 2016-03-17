@@ -9,6 +9,9 @@ namespace HappyTwitchBot
 {
     public static class ircPatterns
     {
+        //other constants
+        public static string passwordlink = "https://twitchapps.com/tmi/";
+
         //twitch patterns
         public static string loginerror = ":tmi.twitch.tv NOTICE * :Error logging in";                                                                      //DONE
         public static string nameslist = ".tmi.twitch.tv 353 ";                                                                                             //DO IT
@@ -18,7 +21,7 @@ namespace HappyTwitchBot
         public static string trigger = "!";
 
         public static string pause = trigger + "pause";                                                                                                      //DO IT
-        public static string unpause = trigger + "unpause";
+        public static string unpause = trigger + "unpause";                                                                                                 
         public static string d_pause = pause + " : Bot stops watching the chat until you type '" + unpause + "'.";                                                    
 
         public static string title = trigger + "title";                                                                                                      //DO IT

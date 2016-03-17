@@ -14,20 +14,25 @@
     <Grid>
         <Button x:Name="testbutton" Content="testbutton" HorizontalAlignment="Left" Margin="111,350,0,0" VerticalAlignment="Top" Width="75" FontSize="14 px" BorderThickness="1" 
                 Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="testbutton_Click"/>
-        <Grid x:Name="g_connect" HorizontalAlignment="Left" Height="93" Margin="10,10,0,0" VerticalAlignment="Top" Width="259">
-            <Button x:Name="b_connect" Content="Connect" HorizontalAlignment="Left" Margin="7,63,0,0" VerticalAlignment="Top" Width="245" FontSize="14 px" BorderThickness="1" 
+        <Grid x:Name="g_connect" HorizontalAlignment="Left" Height="111" Margin="10,10,0,0" VerticalAlignment="Top" Width="259">
+            <Label x:Name="l_channel" Content="Channel" HorizontalAlignment="Left" Margin="132,4,0,0" VerticalAlignment="Top" Opacity="0.5"/>
+            <Label x:Name="l_password" Content="Password" HorizontalAlignment="Left" Margin="7,33,0,0" VerticalAlignment="Top" Opacity="0.5"/>
+            <Label x:Name="l_username" Content="Username" HorizontalAlignment="Left" Margin="7,4,0,0" VerticalAlignment="Top" Opacity="0.5"/>
+            <Button x:Name="b_connect" Content="Connect" HorizontalAlignment="Left" Margin="7,85,0,-15" VerticalAlignment="Top" Width="245" FontSize="14 px" BorderThickness="1" 
         		Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="b_connect_Click"/>
             <TextBox x:Name="tb_username" HorizontalAlignment="Left" Height="23" Margin="7,7,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Background="Transparent"
-        		IsHitTestVisible="True" TextChanged="tb_username_TextChanged" GotFocus="tb_username_GotFocus"/>
+        		IsHitTestVisible="True" TextChanged="tb_username_TextChanged" GotFocus="tb_username_GotFocus" LostFocus="tb_username_LostFocus" ToolTip="Bot Twitch Username"/>
             <TextBox x:Name="tb_password" HorizontalAlignment="Left" Height="23" Margin="7,35,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Background="Transparent"
-        		Width="120" IsHitTestVisible="True" TextChanged="tb_username_TextChanged" GotFocus="tb_password_GotFocus"/>
+        		Width="120" IsHitTestVisible="True" TextChanged="tb_username_TextChanged" GotFocus="tb_password_GotFocus" LostFocus="tb_password_LostFocus" ToolTip="Bot Twitch Password - get it from https://twitchapps.com/tmi/"/>
             <TextBox x:Name="tb_channel" HorizontalAlignment="Left" Height="23" Margin="132,7,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Background="Transparent" 
-        		GotFocus="tb_channel_GotFocus"/>
+        		GotFocus="tb_channel_GotFocus" LostFocus="tb_channel_LostFocus" ToolTip="Bot will join this channel"/>
             <CheckBox x:Name="cb_remember" Content="Remember Me" HorizontalAlignment="Left" Margin="136,39,0,0" VerticalAlignment="Top"/>
         </Grid>
         <TextBox x:Name="tb_test" HorizontalAlignment="Left" Height="457" Margin="274,20,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="589"/>
-        <TextBox x:Name="tb_welcomemsg" HorizontalAlignment="Left" Height="84" Margin="18,128,0,0" TextWrapping="Wrap" Text="Welcome to the channel!" VerticalAlignment="Top" Width="243"/>
-        <Label x:Name="label" Content="Welcome Message" HorizontalAlignment="Left" Margin="18,103,0,0" VerticalAlignment="Top" Width="243"/>
+        <TextBox x:Name="tb_welcomemsg" HorizontalAlignment="Left" Height="84" Margin="18,152,0,0" TextWrapping="Wrap" Text="Welcome to the channel!" VerticalAlignment="Top" Width="243" ToolTip="Users joining the channel will receive this message"/>
+        <Label x:Name="label" Content="Welcome Message" HorizontalAlignment="Left" Margin="18,126,0,0" VerticalAlignment="Top" Width="243" ToolTip="Users joining the channel will receive this message"/>
+        <Label x:Name="l_getpassword" Content="Get password from" HorizontalAlignment="Left" Margin="18,67,0,0" VerticalAlignment="Top" FontSize="10.667"/>
+        <Label x:Name="l_passwordlink" Content="PW LINK" HorizontalAlignment="Left" Margin="113,67,0,0" VerticalAlignment="Top" FontSize="10.667" Foreground="#FF1700FF" FontWeight="Bold" MouseLeftButtonUp="l_passwordlink_MouseLeftButtonUp"/>
 
     </Grid>
 </Window>

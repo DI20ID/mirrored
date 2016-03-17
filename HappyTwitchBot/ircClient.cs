@@ -9,9 +9,13 @@ namespace HappyTwitchBot
 {
     public class ircClient                 //class to create connection to the twitch irc server
     {
+        #region VARIABLES
+
         private string username;        //irc connect username
-        private string channel;         //irc channel to connect to (gets assigned in "public void joinRoom(string channel)"
-        private string ircString;       //string for continously reading irc messages
+        private string channel;         //irc channel to connect to (gets assigned in "public void joinRoom(string channel)" - on initialization channel = username
+        private string ircString;       //string for continously reading irc message
+
+        public string logfilepath;
 
         public TcpClient tcpClient;         //tcpClient for TCP connection
         public bool ReadStreamEnabled;       //bool to enable continous Stream Reading
@@ -20,20 +24,35 @@ namespace HappyTwitchBot
         private StreamReader inputStream;      //irc input Stream (Read)
         private StreamWriter outputStream;      //irc output Stream (Write)
 
+        #endregion
+
+        #region CONSTRUCTORS
         public ircClient()
         {
+
         }
 
-
+        
         public ircClient(string ip, int port, string username, string password)     //initial function for new ircClient
         {
             ReadStreamEnabled = false;      //set continous Stream Reading to false on initialization
             Initialization = true;
             this.username = username;                                       //save username for later use
+            channel = username;                                             //initialize channel so it's not NULL
             tcpClient = new TcpClient(ip, port);                            // create TCP Client
             inputStream = new StreamReader(tcpClient.GetStream());          //create input irc stream
             outputStream = new StreamWriter(tcpClient.GetStream());         //create output irc stream
+            ircString = "";                                                 //initialize ircString so it's not NULL
+            logfilepath = "C:\\Temp\\_HappyTwitchBot.log";                    //default log file path
+            Login(username,password);
 
+        }
+        #endregion
+
+        #region FUNCTIONS
+
+        public void Login(string username, string password)                         //function to login to an account on twitch using irc.password and irc.username
+        {
             outputStream.WriteLine("PASS " + password);                     //send Login data with the correct irc syntax to irc output stream
             outputStream.WriteLine("NICK " + username);
             outputStream.WriteLine("USER " + username + " 8 * :" + username);
@@ -58,19 +77,37 @@ namespace HappyTwitchBot
         }
 
         public string readMessage()                     //read irc input stream - 1 line each time
-        {
+        {                                               //WARNING: This function will wait on "inputStream.ReadLine()" until data is received
             string message = inputStream.ReadLine();    //read line from input stream
             return message;                             //return the line
         }
 
 
 
-        public void ContinousRead()                     // continously read irc input stream as long as ReadStream Enabled == true
-        {
-            ircString = "";
+        public void WatchDog()                     // continously read irc input stream as long as ReadStream Enabled == true 
+        {                                               // WARNING: if ReadStreamEnabled or Initialization is "true" - This function will wait on "inputStream.ReadLine()" until data is received
+            if (ReadStreamEnabled)
+            {
+                string pattern = inputStream.ReadLine();    //wait for data on the ircClient in putStream
+
+                Thread WatchDogThread = new Thread(WatchDog);       //start a new thread to wait for the next line (better reaction time)
+                WatchDogThread.Start();
+
+                PatternCheck(pattern);
+                
+                /*
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@logfilepath,true))      //write log file
+                {
+                    file.WriteLine(pattern);
+                }
+                */
+
+            }
+
             while (Initialization)                      //initial stream read to get userlist
             {
                 ircString = inputStream.ReadLine();
+
                 /*
 
 
@@ -78,12 +115,14 @@ namespace HappyTwitchBot
 
 
                 */
+
                 /*
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Markus.LIONNET\Desktop\testread.txt", true))
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@logfilepath, true))     //write log file
                 {
                     file.WriteLine(ircString);
                 }
                 */
+
                 if (ircString.Contains(ircPatterns.loginerror))
                 {
                     MessageBox.Show("Login Failed. \nWrong password and/or username!\n\nDetails: " + ircString, "Error");
@@ -95,38 +134,26 @@ namespace HappyTwitchBot
                     ReadStreamEnabled = true;
                     Initialization = false;
                 }
-                
-            }
 
-            string pattern = inputStream.ReadLine();
-
-            if (ReadStreamEnabled)
-            {
-                Thread patternThread = new Thread(ContinousRead);
-                patternThread.Start();
-                /*
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Markus.LIONNET\Desktop\testread.txt",true))
-                {
-                    file.WriteLine(pattern);
-                }
-                /*
-                if (pattern.Contains("!hello"))
-                {
-                    sendChatMessage("*waves*");
-                }
-                
-                
-
-                ADD CHAT PATTERN CHECKS
-
-
-                */
             }
         }
 
         public void PatternCheck(string pattern)
         {
+            /*
+            if (pattern.Contains("!hello"))
+            {
+                sendChatMessage("*waves*");
+            }
 
+
+
+            ADD CHAT PATTERN CHECKS
+
+
+            */
         }
+
+        #endregion
     }
 }

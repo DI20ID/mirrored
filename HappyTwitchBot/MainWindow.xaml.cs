@@ -2,13 +2,13 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Threading;
+using System.Diagnostics;
 
 
 namespace HappyTwitchBot
 {
     public partial class MainWindow : Window
     {
-
         internal ircClient irc = new ircClient();
         internal string sUsername = "";
         internal string sPassword = "";
@@ -19,16 +19,16 @@ namespace HappyTwitchBot
         public MainWindow()
         {
             InitializeComponent();
-
+            l_passwordlink.Content = ircPatterns.passwordlink;
         }
 
-        public void WriteLog(string log)
-        {
-            tb_test.AppendText(log);
-            tb_test.AppendText("\n");
-        }
+
 
         #region EVENTHANDLER
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+        }
 
         // connect button click
         private void b_connect_Click(object sender, RoutedEventArgs e)
@@ -61,7 +61,7 @@ namespace HappyTwitchBot
 
             if (connected == true)
             {
-                Thread ircThread = new Thread(irc.ContinousRead);
+                Thread ircThread = new Thread(irc.WatchDog);
                 ircThread.Start();
             }
             else
@@ -91,34 +91,67 @@ namespace HappyTwitchBot
         // textbox username GotFocus
         private void tb_username_GotFocus(object sender, RoutedEventArgs e)
         {
-            
+            l_username.Opacity = 0;
         }
 
 
         // textbox password GotFocus
         private void tb_password_GotFocus(object sender, RoutedEventArgs e)
         {
-            
+            l_password.Opacity = 0;
         }
 
 
         // textbox channel GotFocus
         private void tb_channel_GotFocus(object sender, RoutedEventArgs e)
         {
-            
+            l_channel.Opacity = 0;
         }
 
         #endregion
 
         #region FUNCTIONS
 
+        public void WriteLog(string log)
+        {
+            tb_test.AppendText(log);
+            tb_test.AppendText("\n");
+        }
+
 
 
         #endregion
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void tb_username_LostFocus(object sender, RoutedEventArgs e)
         {
+            if (tb_username.Text == "")
+            {
+                l_username.Opacity = 0.5;
+            }
+        }
 
-    }
+        private void tb_password_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (tb_password.Text == "")
+            {
+                l_password.Opacity = 0.5;
+            }
+        }
+
+        private void tb_channel_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (tb_channel.Text == "")
+            {
+                l_channel.Opacity = 0.5;
+            }
+        }
+
+        private void l_passwordlink_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Process browser = new Process();
+            browser.StartInfo.UseShellExecute = true;
+            browser.StartInfo.FileName = ircPatterns.passwordlink;
+            browser.Start();
+        }
     }
 }
