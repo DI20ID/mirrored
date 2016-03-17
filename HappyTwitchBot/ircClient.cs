@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Security;
 using System.Threading;
@@ -16,6 +17,8 @@ namespace HappyTwitchBot
         private string channel;         //irc channel to connect to (gets assigned in "public void joinRoom(string channel)" - on initialization channel = username
         private string ircString;       //string for continously reading irc message
 
+  
+
         public string logfilepath;
 
         public TcpClient tcpClient;         //tcpClient for TCP connection
@@ -24,7 +27,7 @@ namespace HappyTwitchBot
 
         private StreamReader inputStream;      //irc input Stream (Read)
         private StreamWriter outputStream;      //irc output Stream (Write)
-        private Dictionary<string,string> userlist;     //userlist with <username,rank>
+        private Dictionary<string,string> userdic;     //userlist with <username,rank>
 
         #endregion
 
@@ -45,9 +48,9 @@ namespace HappyTwitchBot
             inputStream = new StreamReader(tcpClient.GetStream());          //create input irc stream
             outputStream = new StreamWriter(tcpClient.GetStream());         //create output irc stream
             ircString = "";                                                 //initialize ircString so it's not NULL
-            logfilepath = "C:\\Temp\\_HappyTwitchBot.log";                    //default log file path
+            logfilepath = Path.GetTempPath() + "_HappyTwitchBot.log";                               //default log file path
             Login(username,password);
-            userlist = new Dictionary<string,string>;
+            userdic = new Dictionary<string,string>();
         }
         #endregion
 
@@ -56,6 +59,11 @@ namespace HappyTwitchBot
         public void RequestMembership()
         {
             sendIrcMessage(ircPatterns.req_membership);
+        }
+
+        public void RequestTags()
+        {
+            sendIrcMessage(ircPatterns.req_tags);
         }
 
         public void Login(string username, string password)                         //function to login to an account on twitch using irc.password and irc.username
@@ -89,11 +97,81 @@ namespace HappyTwitchBot
             return message;                             //return the line
         }
 
-
+        public string capIRCString(string StrToCap)
+        {
+            int capmark = StrToCap.IndexOf("#" + channel);
+            StrToCap = StrToCap.Substring(capmark + channel.Length + 3);
+            return StrToCap;
+        }
 
         public void WatchDog()                     // continously read irc input stream as long as ReadStream Enabled == true 
         {                                               // WARNING: if ReadStreamEnabled or Initialization is "true" - This function will wait on "inputStream.ReadLine()" until data is received
-            if (ReadStreamEnabled)
+            while (Initialization)                      //initial stream read to get userlist
+            {
+                ircString = inputStream.ReadLine();
+
+                if (!File.Exists(logfilepath))              //check if logfile exists - otherwise create
+                {
+                    try
+                    {
+                        var log = File.Create(logfilepath);
+                        log.Close();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+                
+                if (File.Exists(logfilepath))               //write logfile
+                {
+                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(@logfilepath, true))
+                        //write log file
+                    {
+                        file.WriteLine(ircString);
+                        file.Close();
+                    }
+                    
+                }
+
+                if (ircString.Contains(ircPatterns.userlist))           //get userlist
+                {
+                    ircString = capIRCString(ircString);
+
+                    string[] users;
+                    users = ircString.Split(' ');
+                    foreach (string user in users)
+                    {
+                        if (user == username)
+                        {
+                            userdic.Add(user, ircPatterns.rank_owner);
+                        }
+                        else
+                        {
+                            userdic.Add(user, ircPatterns.rank_peasant);
+                        }
+                    }
+
+                    continue;
+                }
+
+
+                if (ircString.Contains(ircPatterns.loginerror))
+                {
+                    MessageBox.Show("Login Failed. \nWrong password and/or username!\n\nDetails: " + ircString, "Error");
+                    Initialization = false;
+                    ReadStreamEnabled = false;
+
+                    continue;
+                }
+                if (ircString.Contains(ircPatterns.userlistend))
+                {
+                    ReadStreamEnabled = true;
+                    Initialization = false;
+                }
+            }
+
+            if (ReadStreamEnabled)      //Continous reading of irc stream
             {
                 string pattern = inputStream.ReadLine();    //wait for data on the ircClient inputStream
 
@@ -101,54 +179,37 @@ namespace HappyTwitchBot
                 WatchDogThread.Start();
 
                 PatternCheck(pattern);
-                
-                
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@logfilepath,true))      //write log file
+
+                if (!File.Exists(logfilepath))
                 {
-                    file.WriteLine(pattern);
+                    try
+                    {
+                        var log = File.Create(logfilepath);
+                        log.Close();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                 }
-                
-
-            }
-
-            while (Initialization)                      //initial stream read to get userlist
-            {
-                ircString = inputStream.ReadLine();
-
-                /*
-
-
-                ADD NAMES LIST INITIALIZATION
-
-
-                */
-
-                
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@logfilepath, true))     //write log file
+                if (File.Exists(logfilepath))
                 {
-                    file.WriteLine(ircString);
+                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(@logfilepath, true))
+                    //write log file
+                    {
+                        file.WriteLine(pattern);
+                    }
                 }
 
-                if (ircString.Contains(ircPatterns.userlist))
-                {
-
-                }
-
-                if (ircString.Contains(ircPatterns.loginerror))
-                {
-                    MessageBox.Show("Login Failed. \nWrong password and/or username!\n\nDetails: " + ircString, "Error");
-                    Initialization = false;
-                    ReadStreamEnabled = false;
-                }
-                if (ircString.Contains(ircPatterns.userlistend))
-                {
-                    ReadStreamEnabled = true;
-                    Initialization = false;
-                }
 
             }
         }
 
+
+        public void breakpoint()
+        {
+            return;
+        }
         public void PatternCheck(string pattern)
         {
             /*

@@ -1,8 +1,10 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Controls;
 using System.Threading;
 using System.Diagnostics;
+using System.Net;
 
 
 namespace HappyTwitchBot
@@ -12,6 +14,7 @@ namespace HappyTwitchBot
         internal ircClient irc = new ircClient();
         internal string sUsername = "";
         internal string sPassword = "";
+        internal string channel = "";
         public string logging="";
 
 
@@ -20,9 +23,13 @@ namespace HappyTwitchBot
         {
             InitializeComponent();
             l_passwordlink.Content = ircPatterns.passwordlink;
+            tb_username.Text = "secrethappyliooon";        //temporary username - DELETE ON FINAL RELEASE
+            tb_password.Text = "oauth:fb54elmxy4hfrcasoph8rxux7blv4h";         //temporary password - DELETE ON FINAL RELEASE
+            tb_channel.Text = "riotgames";
+            l_username.Opacity = 0;
+            l_password.Opacity = 0;
+            l_channel.Opacity = 0;
         }
-
-
 
         #region EVENTHANDLER
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -37,14 +44,27 @@ namespace HappyTwitchBot
             g_connect.IsEnabled = false;
 
 
-            sUsername = "secrethappyliooon";        //temporary username - DELETE ON FINAL RELEASE
-            sPassword = "oauth:fb54elmxy4hfrcasoph8rxux7blv4h";         //temporary password - DELETE ON FINAL RELEASE
-            //sUsername = tb_password.Text;
-            //sPassword = tb_password.Text;
-            
-            irc = new ircClient("irc.twitch.tv", 6667, sUsername, sPassword);
+
+            sUsername = tb_username.Text;
+            sPassword = tb_password.Text;
+            channel = tb_channel.Text;
+
+
+            // irc = new ircClient("irc.twitch.tv", 443, sUsername, sPassword);
+            WebClient serverapi = new WebClient();
+            string serverlist = serverapi.DownloadString("http://tmi.twitch.tv/servers?channel=" + channel);
+            serverlist = serverlist.Replace(@"{""cluster"":""event"",""servers"":[""","");
+            serverlist = serverlist.Replace(@"{""cluster"":""main"",""servers"":[""", "");
+            serverlist = serverlist.Split('"')[0];
+            string ip = serverlist.Split(':')[0];
+            int port = Int32.Parse(serverlist.Split(':')[1]);
+
+
+
+            irc = new ircClient(ip, port, sUsername, sPassword);
             irc.RequestMembership();
-            irc.joinRoom("nikolarntv");
+            irc.RequestTags();
+            irc.joinRoom("riotgames");
             int sleep = 0;
             bool connected = false;
 
@@ -76,7 +96,7 @@ namespace HappyTwitchBot
         // button test Click
         private void testbutton_Click(object sender, RoutedEventArgs e)
         {
-            irc.sendChatMessage("It works!");
+            irc.breakpoint();
         }
 
           
