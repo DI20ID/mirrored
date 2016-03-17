@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Security;
 using System.Threading;
 using System.Windows;
+using System.Collections.Generic;
 
 
 namespace HappyTwitchBot
@@ -23,6 +24,7 @@ namespace HappyTwitchBot
 
         private StreamReader inputStream;      //irc input Stream (Read)
         private StreamWriter outputStream;      //irc output Stream (Write)
+        private Dictionary<string,string> userlist;     //userlist with <username,rank>
 
         #endregion
 
@@ -45,11 +47,16 @@ namespace HappyTwitchBot
             ircString = "";                                                 //initialize ircString so it's not NULL
             logfilepath = "C:\\Temp\\_HappyTwitchBot.log";                    //default log file path
             Login(username,password);
-
+            userlist = new Dictionary<string,string>;
         }
         #endregion
 
         #region FUNCTIONS
+
+        public void RequestMembership()
+        {
+            sendIrcMessage(ircPatterns.req_membership);
+        }
 
         public void Login(string username, string password)                         //function to login to an account on twitch using irc.password and irc.username
         {
@@ -88,19 +95,19 @@ namespace HappyTwitchBot
         {                                               // WARNING: if ReadStreamEnabled or Initialization is "true" - This function will wait on "inputStream.ReadLine()" until data is received
             if (ReadStreamEnabled)
             {
-                string pattern = inputStream.ReadLine();    //wait for data on the ircClient in putStream
+                string pattern = inputStream.ReadLine();    //wait for data on the ircClient inputStream
 
                 Thread WatchDogThread = new Thread(WatchDog);       //start a new thread to wait for the next line (better reaction time)
                 WatchDogThread.Start();
 
                 PatternCheck(pattern);
                 
-                /*
+                
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(@logfilepath,true))      //write log file
                 {
                     file.WriteLine(pattern);
                 }
-                */
+                
 
             }
 
@@ -116,12 +123,16 @@ namespace HappyTwitchBot
 
                 */
 
-                /*
+                
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(@logfilepath, true))     //write log file
                 {
                     file.WriteLine(ircString);
                 }
-                */
+
+                if (ircString.Contains(ircPatterns.userlist))
+                {
+
+                }
 
                 if (ircString.Contains(ircPatterns.loginerror))
                 {
@@ -129,7 +140,7 @@ namespace HappyTwitchBot
                     Initialization = false;
                     ReadStreamEnabled = false;
                 }
-                if (ircString.Contains(ircPatterns.nameslistend))
+                if (ircString.Contains(ircPatterns.userlistend))
                 {
                     ReadStreamEnabled = true;
                     Initialization = false;

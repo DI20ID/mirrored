@@ -43,7 +43,8 @@ namespace HappyTwitchBot
             //sPassword = tb_password.Text;
             
             irc = new ircClient("irc.twitch.tv", 6667, sUsername, sPassword);
-            irc.joinRoom("lirik");
+            irc.RequestMembership();
+            irc.joinRoom("nikolarntv");
             int sleep = 0;
             bool connected = false;
 
@@ -108,6 +109,42 @@ namespace HappyTwitchBot
             l_channel.Opacity = 0;
         }
 
+        //textbox username LostFocus
+        private void tb_username_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (tb_username.Text == "")
+            {
+                l_username.Opacity = 0.5;
+            }
+        }
+
+        //textbox password LostFocus
+        private void tb_password_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (tb_password.Text == "")
+            {
+                l_password.Opacity = 0.5;
+            }
+        }
+
+        //textbox channel LostFocus
+        private void tb_channel_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (tb_channel.Text == "")
+            {
+                l_channel.Opacity = 0.5;
+            }
+        }
+
+        //link for password - Mouse Left Button Release - open browser
+        private void l_passwordlink_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Process browser = new Process();
+            browser.StartInfo.UseShellExecute = true;
+            browser.StartInfo.FileName = ircPatterns.passwordlink;
+            browser.Start();
+        }
+
         #endregion
 
         #region FUNCTIONS
@@ -122,36 +159,6 @@ namespace HappyTwitchBot
 
         #endregion
 
-        private void tb_username_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (tb_username.Text == "")
-            {
-                l_username.Opacity = 0.5;
-            }
-        }
 
-        private void tb_password_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (tb_password.Text == "")
-            {
-                l_password.Opacity = 0.5;
-            }
-        }
-
-        private void tb_channel_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (tb_channel.Text == "")
-            {
-                l_channel.Opacity = 0.5;
-            }
-        }
-
-        private void l_passwordlink_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            Process browser = new Process();
-            browser.StartInfo.UseShellExecute = true;
-            browser.StartInfo.FileName = ircPatterns.passwordlink;
-            browser.Start();
-        }
     }
 }

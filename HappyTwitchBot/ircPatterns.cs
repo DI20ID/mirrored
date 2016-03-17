@@ -8,15 +8,24 @@ using System.Threading.Tasks;
 namespace HappyTwitchBot
 {
     public static class ircPatterns
-    {
+    {   //Twitch IRC Guide https://github.com/justintv/Twitch-API/blob/master/IRC.md
         //other constants
         public static string passwordlink = "https://twitchapps.com/tmi/";
 
-        //twitch patterns
+        #region TWITCH PATTERNS
+        //input
         public static string loginerror = ":tmi.twitch.tv NOTICE * :Error logging in";                                                                      //DONE
-        public static string nameslist = ".tmi.twitch.tv 353 ";                                                                                             //DO IT
-        public static string nameslistend = ".tmi.twitch.tv 366 ";                                                                                          //DO IT    
+        public static string userlist = ".tmi.twitch.tv 353 ";                                                                                             //DO IT
+        public static string userlistend = ".tmi.twitch.tv 366 ";                                                                                          //DO IT    
+        public static string ping = "PING :tmi.twitch.tv";                                                                                                  //DO IT
+        public static string unknowncmd = ":tmi.twitch.tv 421";                                                                                             //DO IT
 
+        //output
+        public static string req_membership = "CAP REQ :twitch.tv/membership";                                                                              //DO IT
+        public static string pong = "PONG :tmi.twitch.tv";                                                                                                  //DO IT
+        #endregion
+
+        #region CUSTOM PATTERNS
         //custom patterns
         public static string trigger = "!";
 
@@ -55,7 +64,7 @@ namespace HappyTwitchBot
         public static string hug_user = "user";                                                                                                              //DO IT
         public static string d_hug = hug + " <object> : Hugs object.\n" +
                                      hug + " " + hug_user + " : Gives hug to a user in whisper chat.";
-
+        #endregion
 
 
 
