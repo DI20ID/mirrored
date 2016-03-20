@@ -28,6 +28,7 @@ namespace HappyTwitchBot
         private StreamReader inputStream;      //irc input Stream (Read)
         private StreamWriter outputStream;      //irc output Stream (Write)
         private Dictionary<string,string> userdic;     //userlist with <username,rank>
+        private Dictionary<string, twitchuser> userdic2; // temporary userlist
 
         #endregion
 
@@ -51,6 +52,7 @@ namespace HappyTwitchBot
             logfilepath = Path.GetTempPath() + "_HappyTwitchBot.log";                               //default log file path
             Login(username,password);
             userdic = new Dictionary<string,string>();
+            userdic2 = new Dictionary<string, twitchuser>();
         }
         #endregion
 
@@ -145,10 +147,14 @@ namespace HappyTwitchBot
                         if (user == username)
                         {
                             userdic.Add(user, ircPatterns.rank_owner);
+                            // or something like that
+                            userdic2.Add(user, new twitchuser(true, true, true));
                         }
                         else
                         {
                             userdic.Add(user, ircPatterns.rank_peasant);
+                            // or something like that
+                            userdic2.Add(user, new twitchuser(true, false, true));
                         }
                     }
 
