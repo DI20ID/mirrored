@@ -5,6 +5,7 @@ using System.Security;
 using System.Threading;
 using System.Windows;
 using System.Collections.Generic;
+using System.Windows.Markup.Localizer;
 
 
 namespace HappyTwitchBot
@@ -27,8 +28,8 @@ namespace HappyTwitchBot
 
         private StreamReader inputStream;      //irc input Stream (Read)
         private StreamWriter outputStream;      //irc output Stream (Write)
-        private Dictionary<string,string> userdic;     //userlist with <username,rank>
-        private Dictionary<string, twitchuser> userdic2; // temporary userlist
+        private Dictionary<string, twitchuser> userdic; // temporary userlist
+        private Dictionary<string, twitchcommand> commanddic; //command list 
 
         #endregion
 
@@ -51,8 +52,8 @@ namespace HappyTwitchBot
             ircString = "";                                                 //initialize ircString so it's not NULL
             logfilepath = Path.GetTempPath() + "_HappyTwitchBot.log";                               //default log file path
             Login(username,password);
-            userdic = new Dictionary<string,string>();
-            userdic2 = new Dictionary<string, twitchuser>();
+            userdic = new Dictionary<string, twitchuser>();
+            commanddic = new Dictionary<string, twitchcommand>();
         }
         #endregion
 
@@ -136,6 +137,32 @@ namespace HappyTwitchBot
                     
                 }
 
+                //Not included for now since it only works for smaller channels
+                /*
+                if (ircString.Contains(ircPatterns.mod) && !ircString.Contains(ircPatterns.chatmessage))           //mod add / delete
+                {
+                    ircString = capIRCString(ircString);
+
+                    if (ircString.Substring(0, 2) == "+o")
+                    {
+                        ircString.Replace("+o ", "");
+                        userdic.Add(ircString,new twitchuser(false,true,false));
+                    }
+                    else
+                    {
+                        if (ircString.Substring(0, 2) == "-o")
+                        {
+                            ircString.Replace("-o ", "");
+                            userdic.Add(ircString, new twitchuser(false, true, false));
+                        }
+                    }
+
+                    continue;
+                }
+                */
+
+                //Not included for now since it only works for smaller channels
+                /*
                 if (ircString.Contains(ircPatterns.userlist))           //get userlist
                 {
                     ircString = capIRCString(ircString);
@@ -146,20 +173,18 @@ namespace HappyTwitchBot
                     {
                         if (user == username)
                         {
-                            userdic.Add(user, ircPatterns.rank_owner);
-                            // or something like that
-                            userdic2.Add(user, new twitchuser(true, true, true));
+                            userdic.Add(user, new twitchuser(true, true, true));
                         }
                         else
                         {
-                            userdic.Add(user, ircPatterns.rank_peasant);
-                            // or something like that
-                            userdic2.Add(user, new twitchuser(true, false, true));
+                            userdic.Add(user, new twitchuser(true, false, true));
                         }
                     }
 
                     continue;
                 }
+                */
+
 
 
                 if (ircString.Contains(ircPatterns.loginerror))
@@ -186,6 +211,7 @@ namespace HappyTwitchBot
 
                 PatternCheck(pattern);
 
+                /*
                 if (!File.Exists(logfilepath))
                 {
                     try
@@ -206,7 +232,7 @@ namespace HappyTwitchBot
                         file.WriteLine(pattern);
                     }
                 }
-
+                */
 
             }
         }
@@ -218,6 +244,24 @@ namespace HappyTwitchBot
         }
         public void PatternCheck(string pattern)
         {
+            if (pattern == ircPatterns.ping)            //ping reply to twitch (every 5 minutes)
+            {
+                sendIrcMessage(ircPatterns.pong);
+            }
+
+            if (pattern.Contains(ircPatterns.chatmessage + channel))        //chatmessages
+            {
+                twitchuser userfocus = AddUser(pattern);
+                string messagefocus = capIRCString(pattern);
+
+                if (userfocus.moderator == "1")
+                {
+                    if(messagefocus == "!hello")
+                        sendChatMessage("bla");
+                }
+            }
+
+
             /*
             if (pattern.Contains("!hello"))
             {
@@ -230,6 +274,120 @@ namespace HappyTwitchBot
 
 
             */
+        }
+
+        private twitchuser AddUser(string pattern)
+        {
+            string[] tags = (pattern.Substring(0, pattern.IndexOf(ircPatterns.chatmessage))).Split(';');
+
+            string color = "";      //textcolor
+            string name = "";       //username
+            string emotes = "";     //emotes user has
+            string mod = "";        //moderator?
+            string roomID = "";     //roomID user is in
+            string subscriber = ""; //subscriber?
+            string turbo = "";      //turbo user?
+            string userID = "";     //userID
+            string host = "";       //host of the channel?
+
+            foreach (string tag in tags)                //get different properties from string and make a userdic entry if it doesn't exist already
+            {
+                string prop = tag.Split('=')[0];
+                switch (prop)
+                {
+                    case "color":
+                        {
+                            if (tag.Split('=').Length > 1)
+                            {
+                                color = tag.Split('=')[1];
+                            }
+                            continue;
+                        }
+                    case "display-name":
+                        {
+                            if (tag.Split('=').Length > 1)
+                            {
+                                name = tag.Split('=')[1];
+                            }
+                            continue;
+                        }
+
+                    case "emotes":
+                        {
+                            if (tag.Split('=').Length > 1)
+                            {
+                                emotes = tag.Split('=')[1];
+                            }
+                            continue;
+                        }
+
+                    case "mod":
+                        {
+                            if (tag.Split('=').Length > 1)
+                            {
+                                mod = tag.Split('=')[1];
+                            }
+                            continue;
+                        }
+
+                    case "room-id":
+                        {
+                            if (tag.Split('=').Length > 1)
+                            {
+                                roomID = tag.Split('=')[1];
+                            }
+                            continue;
+                        }
+
+                    case "subscriber":
+                        {
+                            if (tag.Split('=').Length > 1)
+                            {
+                                subscriber = tag.Split('=')[1];
+                            }
+                            continue;
+                        }
+
+                    case "turbo":
+                        {
+                            if (tag.Split('=').Length > 1)
+                            {
+                                turbo = tag.Split('=')[1];
+                            }
+                            continue;
+                        }
+                    case "user-id":
+                        {
+                            if (tag.Split('=').Length > 1)
+                            {
+                                userID = tag.Split('=')[1];
+                            }
+                            continue;
+                        }
+                }
+            }
+
+            if (string.Equals(name, channel, StringComparison.CurrentCultureIgnoreCase))        //set host permissions if message from host
+            {
+                mod = "1";
+                host = "1";
+            }
+
+            if (!userdic.ContainsKey(name))         //add user entry in userdic if it doesn't exist already
+            {
+                userdic.Add(name, new twitchuser(mod, subscriber, host));
+            }
+
+            twitchuser returnuser;
+            userdic.TryGetValue(name, out returnuser);
+            return returnuser;                  //return user entry from userdic
+
+        }
+
+        public void InitialCommands()
+        {
+            commanddic.Clear();
+
         }
 
         #endregion

@@ -8,31 +8,34 @@ namespace HappyTwitchBot
 {
     public class twitchcommand
     {
-        internal string main;
-        internal string parameter1;
+        internal string user;
+        internal string moderator;
+        internal string subscriber;
+        internal string host;
+        internal string description;
 
-        internal string d_main;
-        internal string parameter2;
 
-        public twitchcommand(string main)
+        public twitchcommand()
         {
-            main = this.main;
-            this.parameter1 = "";
-            this.parameter2 = "";
+            
         }
 
-        public twitchcommand(string main, string parameter1)
-        {
-            this.main = main;
-            this.parameter1 = parameter1;
-            this.parameter2 = "";
-        }
 
-        public twitchcommand(string main, string parameter1, string parameter2)
+        public twitchcommand(string user, string moderator, string subscriber, string host)
         {
-            this.main = main;
-            this.parameter1 = parameter1;
-            this.parameter2 = parameter2;
+            this.user = user;
+            this.moderator = moderator;
+            this.subscriber = subscriber;
+            this.host = host;
+            this.description = "";
+        }
+        public twitchcommand(string user, string moderator, string subscriber, string host, string description)
+        {
+            this.user = user;
+            this.moderator = moderator;
+            this.subscriber = subscriber;
+            this.host = host;
+            this.description = description;
         }
     }
 }
