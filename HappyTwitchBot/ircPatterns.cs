@@ -12,15 +12,21 @@ namespace HappyTwitchBot
         //other constants
         internal static string passwordlink = "https://twitchapps.com/tmi/";
 
+
+
+        internal static string serverlist = @"""servers"":[""";
+
         #region TWITCH PATTERNS
         //input
         internal static string loginerror = ":tmi.twitch.tv NOTICE * :Error logging in";                                                                      //DONE
         internal static string userlist = ".tmi.twitch.tv 353 ";                                                                                              //DONE
-        internal static string userlistend = ".tmi.twitch.tv 366 ";                                                                                           //DONE    
+        internal static string userlistend = ".tmi.twitch.tv 366 ";                                                                                           //DONE
         internal static string ping = "PING :tmi.twitch.tv";                                                                                                   //DONE
         internal static string unknowncmd = ":tmi.twitch.tv 421";                                                                                             //DO IT
         internal static string mod = ":jtv MODE";                                                                                                           //DO IT
         internal static string chatmessage = ".tmi.twitch.tv PRIVMSG #";                                                                                       //DONE
+
+
 
         //output
         internal static string req_membership = "CAP REQ :twitch.tv/membership";                                                                              //DONE
@@ -33,14 +39,14 @@ namespace HappyTwitchBot
         internal static string trigger = "!";
 
         internal static string pause = "pause";                                                                                                      //DO IT
-        internal static string d_pause = "Bot stops watching the chat until you type: " + unpause;
+        internal static string d_pause = "Bot stops watching the chat until you type: '" + trigger + unpause + "'";
         internal static string unpause = "unpause";
-        internal static string d_pause = "Bot starts watching the chat until you type: " + pause;
+        internal static string d_unpause = "Bot starts watching the chat until you type: " + trigger + pause + "'";
 
         internal static string title = "title";                                                                                                      //DO IT
         internal static string d_title = "Displays the title of the stream.";
-        internal static string title_set = "title set";                                                                                                              //DO IT
-        internal static string d_title_set = "Set the title with: '!title set <title>'";
+        internal static string title_set = "title set";                                                                                              //DO IT
+        internal static string d_title_set = "Set the title with: '" + trigger + title_set + "'";
 
         internal static string uptime = "uptime";                                                                                                    //DO IT
         internal static string d_uptime = "Displays the amount of time the stream has been online.";
@@ -51,9 +57,9 @@ namespace HappyTwitchBot
         internal static string game = "game";                                                                                                        //DO IT
         internal static string d_game = "Displays the current twitch channel game.";
         internal static string game_set = "game set";
-        internal static string d_game_set = "Sets the game title:";                                                                                 //DO IT
+        internal static string d_game_set = "Sets the game title: '" + game_set + " <game>'";                                                                                 //DO IT
         internal static string game_steam = "game steam";                                                                                                           //DO IT
-        internal static string d_game_steam = "Sets the game title to the current steam game being played (requires '!steamid' first).";
+        internal static string d_game_steam = "Sets the game title to the current steam game being played (requires '" + trigger + steamid + "' first).";
 
         internal static string steamid = "steamid";                                                                                                  //DO IT
         internal static string d_steamid = "Sets the steamid. Must be in SteamID64 format. Profile must be public.";
@@ -62,12 +68,10 @@ namespace HappyTwitchBot
         internal static string d_viewerstats = "Displays the current number of stream viewers and the highest viewer record for the channel.";
 
         internal static string ishere = "ishere";                                                                                                    //DO IT
-        internal static string d_ishere = "Tells if the user is listed in the viewerlist.";
+        internal static string d_ishere = "Tells if the user is listed in the viewerlist: '" + trigger + ishere + " <username>'";
 
         internal static string hug = "hug";                                                                                                          //DO IT
-        internal static string d_hug = "Hugs object with: '!hug <object>'";
-        internal static string hug_user = "user";                                                                                                              //DO IT
-        internal static string d_hug_user = "Hugs object with: '!hug <object>'";
+        internal static string d_hug = "Hugs object/user with: '" + trigger + hug + " <object/username>'";
         #endregion
 
 

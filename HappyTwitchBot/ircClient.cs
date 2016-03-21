@@ -18,6 +18,9 @@ namespace HappyTwitchBot
         private string channel;         //irc channel to connect to (gets assigned in "public void joinRoom(string channel)" - on initialization channel = username
         private string ircString;       //string for continously reading irc message
 
+        private string api_ClientID;
+        private string api_ClientSecret;
+
   
 
         public string logfilepath;
@@ -54,6 +57,9 @@ namespace HappyTwitchBot
             Login(username,password);
             userdic = new Dictionary<string, twitchuser>();
             commanddic = new Dictionary<string, twitchcommand>();
+            api_ClientID = "5wz089y0qgk0nkb5r0mw5228ksfccnv";
+            api_ClientSecret = "3z84zuu59wuotl8lozyowr0ggo70c5j";
+
         }
         #endregion
 
@@ -254,10 +260,22 @@ namespace HappyTwitchBot
                 twitchuser userfocus = AddUser(pattern);
                 string messagefocus = capIRCString(pattern);
 
-                if (userfocus.moderator == "1")
+                if (messagefocus[0].ToString() == ircPatterns.trigger)
                 {
-                    if(messagefocus == "!hello")
-                        sendChatMessage("bla");
+                    twitchcommand commandfocus;
+                    messagefocus = messagefocus.Substring(1);
+
+                    if (commanddic.ContainsKey(messagefocus))
+                    {
+                        commanddic.TryGetValue(messagefocus, out commandfocus);
+
+
+                        if (messagefocus == ircPatterns.title)
+                        {
+                            //sendIrcMessage("GET / channel");
+                            return;
+                        }
+                    }
                 }
             }
 
@@ -283,12 +301,13 @@ namespace HappyTwitchBot
             string color = "";      //textcolor
             string name = "";       //username
             string emotes = "";     //emotes user has
-            string mod = "";        //moderator?
+            string moderator = "";        //moderator?
             string roomID = "";     //roomID user is in
             string subscriber = ""; //subscriber?
             string turbo = "";      //turbo user?
             string userID = "";     //userID
             string host = "";       //host of the channel?
+            string user = "";
 
             foreach (string tag in tags)                //get different properties from string and make a userdic entry if it doesn't exist already
             {
@@ -325,7 +344,7 @@ namespace HappyTwitchBot
                         {
                             if (tag.Split('=').Length > 1)
                             {
-                                mod = tag.Split('=')[1];
+                                moderator = tag.Split('=')[1];
                             }
                             continue;
                         }
@@ -369,13 +388,21 @@ namespace HappyTwitchBot
 
             if (string.Equals(name, channel, StringComparison.CurrentCultureIgnoreCase))        //set host permissions if message from host
             {
-                mod = "1";
                 host = "1";
             }
 
+            if (!(subscriber == "1" || moderator == "1" || host == "1"))
+            {
+                user = "1";
+            }
+            else
+            {
+                user = "0";
+            }
+               
             if (!userdic.ContainsKey(name))         //add user entry in userdic if it doesn't exist already
             {
-                userdic.Add(name, new twitchuser(mod, subscriber, host));
+                userdic.Add(name, new twitchuser(user, subscriber, moderator, host));
             }
 
             twitchuser returnuser;
@@ -388,6 +415,19 @@ namespace HappyTwitchBot
         {
             commanddic.Clear();
 
+            commanddic.Add(ircPatterns.pause,new twitchcommand("0","0","0","1",ircPatterns.d_pause));
+            commanddic.Add(ircPatterns.unpause, new twitchcommand("0", "0", "0", "1", ircPatterns.d_unpause));
+            commanddic.Add(ircPatterns.title, new twitchcommand("0", "0", "1", "1", ircPatterns.d_title));
+            commanddic.Add(ircPatterns.title_set, new twitchcommand("0", "0", "1", "1", ircPatterns.d_title_set));
+            commanddic.Add(ircPatterns.uptime, new twitchcommand("1", "1", "1", "1", ircPatterns.d_uptime));
+            commanddic.Add(ircPatterns.bothelp, new twitchcommand("1", "1", "1", "1", ircPatterns.d_bothelp));
+            commanddic.Add(ircPatterns.game, new twitchcommand("0", "0", "1", "1", ircPatterns.d_game));
+            commanddic.Add(ircPatterns.game_set, new twitchcommand("0", "0", "1", "1", ircPatterns.d_game_set));
+            commanddic.Add(ircPatterns.game_steam, new twitchcommand("0", "0", "1", "1", ircPatterns.d_game_steam));
+            commanddic.Add(ircPatterns.steamid, new twitchcommand("0", "0", "0", "1", ircPatterns.d_steamid));
+            commanddic.Add(ircPatterns.viewerstats, new twitchcommand("1", "1", "1", "1", ircPatterns.d_viewerstats));
+            commanddic.Add(ircPatterns.ishere, new twitchcommand("1", "1", "1", "1", ircPatterns.d_ishere));
+            commanddic.Add(ircPatterns.hug, new twitchcommand("1", "1", "1", "1", ircPatterns.d_hug));
         }
 
         #endregion

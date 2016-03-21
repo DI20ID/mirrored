@@ -13,6 +13,7 @@ namespace HappyTwitchBot
         internal string moderator;
         internal string subscriber;
         internal string host;
+        internal string user;
 
         public twitchuser()
         {
@@ -20,8 +21,9 @@ namespace HappyTwitchBot
         }
          
 
-        public twitchuser(string moderator, string subscriber, string host)
+        public twitchuser(string user, string subscriber, string moderator, string host)
         {
+            this.user = user;
             this.moderator = moderator;
             this.subscriber = subscriber;
             this.host = host;
