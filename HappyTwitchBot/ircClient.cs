@@ -18,11 +18,6 @@ namespace HappyTwitchBot
         private string channel;         //irc channel to connect to (gets assigned in "public void joinRoom(string channel)" - on initialization channel = username
         private string ircString;       //string for continously reading irc message
 
-        private string api_ClientID;
-        private string api_ClientSecret;
-
-  
-
         public string logfilepath;
 
         public TcpClient tcpClient;         //tcpClient for TCP connection
@@ -57,9 +52,6 @@ namespace HappyTwitchBot
             Login(username,password);
             userdic = new Dictionary<string, twitchuser>();
             commanddic = new Dictionary<string, twitchcommand>();
-            api_ClientID = "5wz089y0qgk0nkb5r0mw5228ksfccnv";
-            api_ClientSecret = "3z84zuu59wuotl8lozyowr0ggo70c5j";
-
         }
         #endregion
 
@@ -217,7 +209,7 @@ namespace HappyTwitchBot
 
                 PatternCheck(pattern);
 
-                /*
+                
                 if (!File.Exists(logfilepath))
                 {
                     try
@@ -238,7 +230,7 @@ namespace HappyTwitchBot
                         file.WriteLine(pattern);
                     }
                 }
-                */
+                
 
             }
         }
@@ -307,7 +299,7 @@ namespace HappyTwitchBot
             string turbo = "";      //turbo user?
             string userID = "";     //userID
             string host = "";       //host of the channel?
-            string user = "";
+            string user = "";       //user - if no moderator/host or subscriber
 
             foreach (string tag in tags)                //get different properties from string and make a userdic entry if it doesn't exist already
             {
@@ -391,7 +383,7 @@ namespace HappyTwitchBot
                 host = "1";
             }
 
-            if (!(subscriber == "1" || moderator == "1" || host == "1"))
+            if (!(subscriber == "1" || moderator == "1" || host == "1"))            //set user if no moderator/host or subscriber
             {
                 user = "1";
             }
@@ -411,7 +403,7 @@ namespace HappyTwitchBot
 
         }
 
-        public void InitialCommands()
+        public void InitialCommands()           //Initial commanddic with default permissions
         {
             commanddic.Clear();
 
