@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Windows.Markup.Localizer;
 
 
+
+
 namespace HappyTwitchBot
 {
     public class ircClient                 //class to create connection to the twitch irc server
@@ -51,8 +53,10 @@ namespace HappyTwitchBot
             logfilepath = Path.GetTempPath() + "_HappyTwitchBot.log";                               //default log file path
             Login(username,password);
             userdic = new Dictionary<string, twitchuser>();
-            commanddic = new Dictionary<string, twitchcommand>();
+            InitialCommands();
         }
+
+
         #endregion
 
         #region FUNCTIONS
@@ -208,7 +212,7 @@ namespace HappyTwitchBot
                 WatchDogThread.Start();
 
                 PatternCheck(pattern);
-
+                /*
                 
                 if (!File.Exists(logfilepath))
                 {
@@ -231,7 +235,7 @@ namespace HappyTwitchBot
                     }
                 }
                 
-
+            */
             }
         }
 
@@ -242,33 +246,120 @@ namespace HappyTwitchBot
         }
         public void PatternCheck(string pattern)
         {
-            if (pattern == ircPatterns.ping)            //ping reply to twitch (every 5 minutes)
+            if (pattern != null)
             {
-                sendIrcMessage(ircPatterns.pong);
-            }
-
-            if (pattern.Contains(ircPatterns.chatmessage + channel))        //chatmessages
-            {
-                twitchuser userfocus = AddUser(pattern);
-                string messagefocus = capIRCString(pattern);
-
-                if (messagefocus[0].ToString() == ircPatterns.trigger)
+                if (pattern == ircPatterns.ping)            //ping reply to twitch (every 5 minutes)
                 {
-                    twitchcommand commandfocus;
-                    messagefocus = messagefocus.Substring(1);
+                    sendIrcMessage(ircPatterns.pong);
+                    return;
+                }
 
-                    if (commanddic.ContainsKey(messagefocus))
+                if (pattern.Contains(ircPatterns.chatmessage + channel))        //chatmessages
+                {
+                    twitchuser userfocus = AddUser(pattern);
+                    string messagefocus = capIRCString(pattern);
+
+                    if (messagefocus[0].ToString() == ircPatterns.trigger)
                     {
-                        commanddic.TryGetValue(messagefocus, out commandfocus);
+                        twitchcommand commandfocus;
+                        messagefocus = messagefocus.Substring(1);
+                        string[] messagearguments = messagefocus.Split(' ');
 
-
-                        if (messagefocus == ircPatterns.title)
+                        if (commanddic.ContainsKey(messagearguments[0]))
                         {
-                            //sendIrcMessage("GET / channel");
-                            return;
+                            commanddic.TryGetValue(messagearguments[0], out commandfocus);
+
+                            if (messagearguments[0] == ircPatterns.led || messagearguments[0] == ircPatterns.onair)
+                            {
+                                bool newsettings = false;
+                                if (messagearguments.Length > 1)
+                                {
+                                    if (messagearguments.Length > 3)
+                                    {
+                                        LED.R = messagearguments[1]; LED.G = messagearguments[2]; LED.B = messagearguments[3];
+                                        newsettings = true;
+                                        LED.led = "null";
+                                    }
+                                    if (messagearguments[0] == ircPatterns.led)
+                                    {
+                                        LED.H = "255";
+                                        LED.ip = "10.0.0.136";
+                                    }
+                                    if (messagearguments[0] == ircPatterns.onair)
+                                    {
+                                        LED.H = "100";
+                                        LED.ip = "10.0.0.137";
+                                    }
+
+                                    LED led = new LED(LED.ip, LED.port);
+
+                                    switch (messagearguments[1])
+                                    {
+                                        case ircPatterns.led_red:
+                                            LED.R = "255"; LED.G = "0"; LED.B = "0";
+                                            LED.led = "null";
+                                            newsettings = true;
+                                            break;
+                                        case ircPatterns.led_green:
+                                            LED.R = "0"; LED.G = "255"; LED.B = "0";
+                                            LED.led = "null";
+                                            newsettings = true;
+                                            break;
+                                        case ircPatterns.led_blue:
+                                            LED.R = "0"; LED.G = "0"; LED.B = "255";
+                                            LED.led = "null";
+                                            newsettings = true;
+                                            break;
+                                        case ircPatterns.led_white:
+                                            LED.R = "255"; LED.G = "255"; LED.B = "255";
+                                            LED.led = "null";
+                                            newsettings = true;
+                                            break;
+                                        case ircPatterns.led_pink:
+                                            LED.R = "255"; LED.G = "20"; LED.B = "147";
+                                            LED.led = "null";
+                                            newsettings = true;
+                                            break;
+                                        case ircPatterns.led_orange:
+                                            LED.R = "255"; LED.G = "140"; LED.B = "0";
+                                            LED.led = "null";
+                                            newsettings = true;
+                                            break;
+                                        case ircPatterns.led_yellow:
+                                            LED.R = "255"; LED.G = "255"; LED.B = "0";
+                                            LED.led = "null";
+                                            newsettings = true;
+                                            break;
+                                        case ircPatterns.led_cyan:
+                                            LED.R = "0"; LED.G = "255"; LED.B = "255";
+                                            LED.led = "null";
+                                            newsettings = true;
+                                            break;
+                                        case ircPatterns.led_purple:
+                                            LED.R = "102"; LED.G = "51"; LED.B = "153";
+                                            LED.led = "null";
+                                            newsettings = true;
+                                            break;
+                                    }
+
+                                    if (newsettings)
+                                    {
+                                        led.sendSettings();
+                                    }
+                                }
+                                return;
+                            }
+                            if (messagearguments[0] == ircPatterns.hello)
+                            {
+                                sendChatMessage("*waves*");
+                                //sendIrcMessage("GET / channel");
+                                return;
+                            }
                         }
                     }
                 }
+            
+            
             }
 
 
@@ -394,7 +485,7 @@ namespace HappyTwitchBot
                
             if (!userdic.ContainsKey(name))         //add user entry in userdic if it doesn't exist already
             {
-                userdic.Add(name, new twitchuser(user, subscriber, moderator, host));
+                userdic.Add(name, new twitchuser(user == "1", subscriber == "1", moderator == "1", host == "1"));
             }
 
             twitchuser returnuser;
@@ -405,21 +496,24 @@ namespace HappyTwitchBot
 
         public void InitialCommands()           //Initial commanddic with default permissions
         {
-            commanddic.Clear();
-
-            commanddic.Add(ircPatterns.pause,new twitchcommand("0","0","0","1",ircPatterns.d_pause));
-            commanddic.Add(ircPatterns.unpause, new twitchcommand("0", "0", "0", "1", ircPatterns.d_unpause));
-            commanddic.Add(ircPatterns.title, new twitchcommand("0", "0", "1", "1", ircPatterns.d_title));
-            commanddic.Add(ircPatterns.title_set, new twitchcommand("0", "0", "1", "1", ircPatterns.d_title_set));
-            commanddic.Add(ircPatterns.uptime, new twitchcommand("1", "1", "1", "1", ircPatterns.d_uptime));
-            commanddic.Add(ircPatterns.bothelp, new twitchcommand("1", "1", "1", "1", ircPatterns.d_bothelp));
-            commanddic.Add(ircPatterns.game, new twitchcommand("0", "0", "1", "1", ircPatterns.d_game));
-            commanddic.Add(ircPatterns.game_set, new twitchcommand("0", "0", "1", "1", ircPatterns.d_game_set));
-            commanddic.Add(ircPatterns.game_steam, new twitchcommand("0", "0", "1", "1", ircPatterns.d_game_steam));
-            commanddic.Add(ircPatterns.steamid, new twitchcommand("0", "0", "0", "1", ircPatterns.d_steamid));
-            commanddic.Add(ircPatterns.viewerstats, new twitchcommand("1", "1", "1", "1", ircPatterns.d_viewerstats));
-            commanddic.Add(ircPatterns.ishere, new twitchcommand("1", "1", "1", "1", ircPatterns.d_ishere));
-            commanddic.Add(ircPatterns.hug, new twitchcommand("1", "1", "1", "1", ircPatterns.d_hug));
+            if(commanddic != null ) commanddic.Clear();
+            commanddic = new Dictionary<string, twitchcommand>();
+            commanddic.Add(ircPatterns.hello, new twitchcommand(false, false, false, true, ircPatterns.d_hello));
+            commanddic.Add(ircPatterns.pause,new twitchcommand(false,false,false,true,ircPatterns.d_pause));
+            commanddic.Add(ircPatterns.unpause, new twitchcommand(false, false, false, true, ircPatterns.d_unpause));
+            commanddic.Add(ircPatterns.title, new twitchcommand(false, false, true, true, ircPatterns.d_title));
+            commanddic.Add(ircPatterns.title_set, new twitchcommand(false, false, true, true, ircPatterns.d_title_set));
+            commanddic.Add(ircPatterns.uptime, new twitchcommand(true, true, true, true, ircPatterns.d_uptime));
+            commanddic.Add(ircPatterns.bothelp, new twitchcommand(true, true, true, true, ircPatterns.d_bothelp));
+            commanddic.Add(ircPatterns.game, new twitchcommand(false, false, true, true, ircPatterns.d_game));
+            commanddic.Add(ircPatterns.game_set, new twitchcommand(false, false, true, true, ircPatterns.d_game_set));
+            commanddic.Add(ircPatterns.game_steam, new twitchcommand(false, false, true, true, ircPatterns.d_game_steam));
+            commanddic.Add(ircPatterns.steamid, new twitchcommand(false, false, false, true, ircPatterns.d_steamid));
+            commanddic.Add(ircPatterns.viewerstats, new twitchcommand(true, true, true, true, ircPatterns.d_viewerstats));
+            commanddic.Add(ircPatterns.ishere, new twitchcommand(true, true, true, true, ircPatterns.d_ishere));
+            commanddic.Add(ircPatterns.hug, new twitchcommand(true, true, true, true, ircPatterns.d_hug));
+            commanddic.Add(ircPatterns.led, new twitchcommand(true, true, true, true, ircPatterns.led));
+            commanddic.Add(ircPatterns.onair, new twitchcommand(true, true, true, true, ircPatterns.led));
         }
 
         #endregion

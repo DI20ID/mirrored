@@ -11,10 +11,12 @@ namespace HappyTwitchBot
     {   //Twitch IRC Guide https://github.com/justintv/Twitch-API/blob/master/IRC.md
         //other constants
         internal static string passwordlink = "https://twitchapps.com/tmi/";
-
+        
 
 
         internal static string serverlist = @"""servers"":[""";
+
+
 
         #region TWITCH PATTERNS
         //input
@@ -37,6 +39,24 @@ namespace HappyTwitchBot
         #region CUSTOM PATTERNS
         //custom patterns
         internal static string trigger = "!";
+
+        internal static string led = "led";
+        internal static string d_led = "Set LED color: '" + trigger + led + "' color" ;
+        internal static string onair = "onair";
+        internal static string d_onair = "Set OnAir color: '" + trigger + led + "' color";
+        internal const string led_red = "red";
+        internal const string led_green = "green";
+        internal const string led_blue = "blue";
+        internal const string led_white = "white";
+        internal const string led_pink = "pink";
+        internal const string led_orange = "orange";
+        internal const string led_yellow = "yellow";
+        internal const string led_cyan = "cyan";
+        internal const string led_purple = "purple";
+
+
+        internal static string hello = "hello";                                                                                                      //DO IT
+        internal static string d_hello = "Greetings: '" + trigger + unpause + "'";
 
         internal static string pause = "pause";                                                                                                      //DO IT
         internal static string d_pause = "Bot stops watching the chat until you type: '" + trigger + unpause + "'";

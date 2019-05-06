@@ -8,10 +8,10 @@ namespace HappyTwitchBot
 {
     public class twitchcommand
     {
-        internal string user;
-        internal string moderator;
-        internal string subscriber;
-        internal string host;
+        internal bool user;
+        internal bool moderator;
+        internal bool subscriber;
+        internal bool host;
         internal string description;
 
 
@@ -21,7 +21,7 @@ namespace HappyTwitchBot
         }
 
 
-        public twitchcommand(string user, string subscriber, string moderator, string host)
+        public twitchcommand(bool user, bool subscriber, bool moderator, bool host)
         {
             this.user = user;
             this.moderator = moderator;
@@ -29,7 +29,7 @@ namespace HappyTwitchBot
             this.host = host;
             this.description = "";
         }
-        public twitchcommand(string user, string subscriber, string moderator, string host, string description)
+        public twitchcommand(bool user, bool subscriber, bool moderator, bool host, string description)
         {
             this.user = user;
             this.moderator = moderator;

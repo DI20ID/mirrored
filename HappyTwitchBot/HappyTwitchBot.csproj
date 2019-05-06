@@ -53,6 +53,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -71,9 +72,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="chat.xaml.cs">
+      <DependentUpon>chat.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LED.cs" />
+    <Compile Include="LEDvalues.cs" />
     <Compile Include="TwitchAPI.cs" />
     <Compile Include="twitchcommand.cs" />
     <Compile Include="twitchuser.cs" />
+    <Page Include="chat.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

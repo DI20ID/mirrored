@@ -10,10 +10,10 @@ namespace HappyTwitchBot
     public class twitchuser
     {
 
-        internal string moderator;
-        internal string subscriber;
-        internal string host;
-        internal string user;
+        internal bool moderator;
+        internal bool subscriber;
+        internal bool host;
+        internal bool user;
 
         public twitchuser()
         {
@@ -21,7 +21,7 @@ namespace HappyTwitchBot
         }
          
 
-        public twitchuser(string user, string subscriber, string moderator, string host)
+        public twitchuser(bool user, bool subscriber, bool moderator, bool host)
         {
             this.user = user;
             this.moderator = moderator;
