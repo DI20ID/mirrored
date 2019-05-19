@@ -30,9 +30,7 @@ namespace HappyTwitchBot
             tb_username.Text = "CHANGEME";        //temporary username - DELETE ON FINAL RELEASE
             tb_password.Password = "CHANGEME";         //temporary password - DELETE ON FINAL RELEASE
             tb_channel.Text = "CHANGEME";
-            l_username.Opacity = 0;
-            l_password.Opacity = 0;
-            l_channel.Opacity = 0;
+            
         }
 
         #region EVENTHANDLER
@@ -116,21 +114,21 @@ namespace HappyTwitchBot
         // textbox username GotFocus
         private void tb_username_GotFocus(object sender, RoutedEventArgs e)
         {
-            l_username.Opacity = 0;
+            
         }
 
 
         // textbox password GotFocus
         private void tb_password_GotFocus(object sender, RoutedEventArgs e)
         {
-            l_password.Opacity = 0;
+            
         }
 
 
         // textbox channel GotFocus
         private void tb_channel_GotFocus(object sender, RoutedEventArgs e)
         {
-            l_channel.Opacity = 0;
+            
         }
 
         //textbox username LostFocus
@@ -138,7 +136,7 @@ namespace HappyTwitchBot
         {
             if (tb_username.Text == "")
             {
-                l_username.Opacity = 0.5;
+               
             }
         }
 
@@ -147,7 +145,7 @@ namespace HappyTwitchBot
         {
             if (tb_password.Password == "")
             {
-                l_password.Opacity = 0.5;
+               
             }
         }
 
@@ -156,7 +154,7 @@ namespace HappyTwitchBot
         {
             if (tb_channel.Text == "")
             {
-                l_channel.Opacity = 0.5;
+                
             }
         }
 

@@ -5,72 +5,84 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HappyTwitchBot"
         mc:Ignorable="d"
-        Title="Happy Twitch Bot" Height="520.674" Width="297.468" ResizeMode="CanMinimize" Closing="Window_Closing">
+        Title="Happy Twitch Bot" Height="493.674" Width="297.468" ResizeMode="CanMinimize" Closing="Window_Closing">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
     </Window.Resources>
 
-    <Grid>
-        <PasswordBox x:Name="tb_password" HorizontalAlignment="Left" Margin="17,45,0,0" VerticalAlignment="Top" Height="23" Width="120" GotFocus="tb_password_GotFocus" LostFocus="tb_password_LostFocus"/>
+    <Grid Height="464" VerticalAlignment="Top">
         <Grid x:Name="g_connect" HorizontalAlignment="Left" Height="111" Margin="10,10,0,0" VerticalAlignment="Top" Width="258">
-            <Label x:Name="l_channel" Content="Channel" HorizontalAlignment="Left" Margin="132,4,0,0" VerticalAlignment="Top" Opacity="0.5"/>
-            <Label x:Name="l_password" Content="oauth:token" HorizontalAlignment="Left" Margin="7,33,0,0" VerticalAlignment="Top" Opacity="0.5"/>
-            <Label x:Name="l_username" Content="Bot Username" HorizontalAlignment="Left" Margin="7,4,0,0" VerticalAlignment="Top" Opacity="0.5"/>
-            <Button x:Name="b_connect" Content="Connect" HorizontalAlignment="Left" Margin="7,79,0,0" VerticalAlignment="Top" Width="243" FontSize="14 px" BorderThickness="1" 
-        		Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="b_connect_Click"/>
+
             <TextBox x:Name="tb_username" HorizontalAlignment="Left" Height="23" Margin="7,7,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Background="Transparent"
         		IsHitTestVisible="True" TextChanged="tb_username_TextChanged" GotFocus="tb_username_GotFocus" LostFocus="tb_username_LostFocus" ToolTip="Bot Twitch Username"/>
             <TextBox x:Name="tb_channel" HorizontalAlignment="Left" Height="23" Margin="132,7,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="117" Background="Transparent" 
         		GotFocus="tb_channel_GotFocus" LostFocus="tb_channel_LostFocus" ToolTip="Bot will join this channel"/>
+            <PasswordBox x:Name="tb_password" HorizontalAlignment="Left" Margin="7,35,0,0" VerticalAlignment="Top" Height="23" Width="120" GotFocus="tb_password_GotFocus" LostFocus="tb_password_LostFocus"/>
             <CheckBox x:Name="cb_remember" Content="Remember Me" HorizontalAlignment="Left" Margin="141,39,0,0" VerticalAlignment="Top"/>
+            <Button x:Name="b_connect" Content="Connect" HorizontalAlignment="Left" Margin="7,79,0,0" VerticalAlignment="Top" Width="243" FontSize="14 px" BorderThickness="1" 
+                    Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="b_connect_Click"/>
+            <Label x:Name="l_getpassword" Content="Get password from" HorizontalAlignment="Left" Margin="32,55,0,0" VerticalAlignment="Top" FontSize="10.667"/>
+            <Label x:Name="l_passwordlink" Content="PW LINK" HorizontalAlignment="Left" Margin="132,55,0,0" VerticalAlignment="Top" FontSize="10.667" Foreground="#FF1700FF" FontWeight="Bold" MouseLeftButtonUp="l_passwordlink_MouseLeftButtonUp"/>
         </Grid>
-        <Button x:Name="led_apply" Content="Apply" HorizontalAlignment="Left" Margin="185,446,0,0" VerticalAlignment="Top" Width="75" Click="led_apply_Click"/>
-        <TextBox x:Name="tb_ledIP" HorizontalAlignment="Left" Height="24" Margin="17,124,0,0" TextWrapping="Wrap" Text="10.0.0.136" VerticalAlignment="Top" Width="75" Background="Transparent"
-                IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledIP_TextChanged"/>
-        <TextBox x:Name="tb_ledR" HorizontalAlignment="Left" Height="18" Margin="87,225,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" Background="Transparent"
-                IsHitTestVisible="True" ToolTip="Bot Twitch Username" Text="-1" TextChanged="tb_ledR_TextChanged"/>
-        <TextBox x:Name="tb_ledG" HorizontalAlignment="Left" Height="18" Margin="87,266,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" Background="Transparent"
-                IsHitTestVisible="True" ToolTip="Bot Twitch Username" Text="-1" TextChanged="tb_ledG_TextChanged"/>
-        <TextBox x:Name="tb_ledB" HorizontalAlignment="Left" Height="18" Margin="87,307,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" Background="Transparent"
-                IsHitTestVisible="True" ToolTip="Bot Twitch Username" Text="-1" TextChanged="tb_ledB_TextChanged"/>
-        <TextBox x:Name="tb_led" HorizontalAlignment="Left" Height="22" Margin="97,153,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" Background="Transparent"
-                IsHitTestVisible="True" ToolTip="Bot Twitch Username" IsEnabled="False" Text="null"/>
-        <TextBox x:Name="tb_ledPort" HorizontalAlignment="Left" Height="24" Margin="97,124,0,0" TextWrapping="Wrap" Text="80" VerticalAlignment="Top" Width="75" Background="Transparent"
-                IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledPort_TextChanged"/>
-        <Label x:Name="l_getpassword" Content="Get password from" HorizontalAlignment="Left" Margin="14,67,0,0" VerticalAlignment="Top" FontSize="10.667"/>
-        <Label x:Name="l_passwordlink" Content="PW LINK" HorizontalAlignment="Left" Margin="108,67,0,0" VerticalAlignment="Top" FontSize="10.667" Foreground="#FF1700FF" FontWeight="Bold" MouseLeftButtonUp="l_passwordlink_MouseLeftButtonUp"/>
-        <Button x:Name="led_red" Content="red" HorizontalAlignment="Left" Margin="25,362,0,0" VerticalAlignment="Top" Width="75" Click="led_red_Click"/>
-        <TextBox x:Name="tb_ledH" HorizontalAlignment="Left" Height="18" Margin="87,183,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" Background="Transparent"
-            IsHitTestVisible="True" ToolTip="Bot Twitch Username" Text="-1" TextChanged="tb_ledH_TextChanged"/>
-        <Slider x:Name="sl_led" HorizontalAlignment="Left" Margin="18,202,0,0" VerticalAlignment="Top" Width="246" Maximum="255" Value="200" ValueChanged="sl_led_ValueChanged"/>
-        <CheckBox x:Name="cb_ledAll" Content="All LEDs" HorizontalAlignment="Left" Margin="192,155,0,0" VerticalAlignment="Top" IsChecked="True" Unchecked="cb_ledAll_Unchecked" Checked="cb_ledAll_Checked"/>
-
-        <Button x:Name="led_green" Content="green" HorizontalAlignment="Left" Margin="105,362,0,0" VerticalAlignment="Top" Width="75" Click="led_green_Click"/>
-        <Button x:Name="led_blue" Content="blue" HorizontalAlignment="Left" Margin="185,362,0,0" VerticalAlignment="Top" Width="75" Click="led_blue_Click"/>
-        <Button x:Name="led_pink" Content="pink" HorizontalAlignment="Left" Margin="25,388,0,0" VerticalAlignment="Top" Width="75" Click="led_pink_Click"/>
-        <Button x:Name="led_white" Content="white" HorizontalAlignment="Left" Margin="105,388,0,0" VerticalAlignment="Top" Width="75" Click="led_white_Click"/>
-        <Button x:Name="led_orange" Content="orange" HorizontalAlignment="Left" Margin="185,388,0,0" VerticalAlignment="Top" Width="75" Click="led_orange_Click"/>
-        <Button x:Name="led_yellow" Content="yellow" HorizontalAlignment="Left" Margin="25,414,0,0" VerticalAlignment="Top" Width="75" Click="led_yellow_Click"/>
-        <Button x:Name="led_cyan" Content="cyan" HorizontalAlignment="Left" Margin="105,414,0,0" VerticalAlignment="Top" Width="75" Click="led_cyan_Click"/>
-        <Button x:Name="led_purple" Content="purple" HorizontalAlignment="Left" Margin="185,414,0,0" VerticalAlignment="Top" Width="75" Click="led_purple_Click"/>
-        <Label Content="Brightness" HorizontalAlignment="Left" Margin="17,179,0,0" VerticalAlignment="Top"/>
-        <Label Content="Red Value" HorizontalAlignment="Left" Margin="18,221,0,0" VerticalAlignment="Top"/>
-        <Slider x:Name="sl_R" HorizontalAlignment="Left" Margin="18,243,0,0" VerticalAlignment="Top" Width="246" Maximum="255" Value="200" ValueChanged="sl_R_ValueChanged"/>
-        <Label Content="Green Value" HorizontalAlignment="Left" Margin="17,262,0,0" VerticalAlignment="Top"/>
-        <Slider x:Name="sl_G" HorizontalAlignment="Left" Margin="17,284,0,0" VerticalAlignment="Top" Width="246" Maximum="255" Value="200" ValueChanged="sl_G_ValueChanged"/>
-        <Label Content="Blue Value" HorizontalAlignment="Left" Margin="17,303,0,0" VerticalAlignment="Top"/>
-        <Slider x:Name="sl_B" HorizontalAlignment="Left" Margin="17,325,0,0" VerticalAlignment="Top" Width="246" Maximum="255" Value="200" ValueChanged="sl_B_ValueChanged"/>
-        <Label Content="LED Control" HorizontalAlignment="Left" Margin="18,150,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="tb_ledURL" HorizontalAlignment="Left" Height="24" Margin="179,124,0,0" TextWrapping="Wrap" Text="/body" VerticalAlignment="Top" Width="81" Background="Transparent"
-            IsHitTestVisible="True" ToolTip="Bot Twitch Username"/>
-        <ComboBox x:Name="cb_devices" HorizontalAlignment="Left" Margin="25,445,0,0" VerticalAlignment="Top" Width="75" Height="22" SelectionChanged="cb_devices_SelectionChanged">
-            <ComboBoxItem Content="LED Wall" IsSelected="True"/>
-            <ComboBoxItem Content="OnAir"/>
-        </ComboBox>
-        <Button x:Name="b_lightsOn" Content="On" HorizontalAlignment="Left" Margin="105,446,0,0" VerticalAlignment="Top" Width="38" Click="b_lightsOn_Click"/>
-        <Button x:Name="b_lightsOff" Content="Off" HorizontalAlignment="Left" Margin="148,446,0,0" VerticalAlignment="Top" Width="32" Click="b_lightsOff_Click"/>
-
+        <Grid x:Name="g_led" Height="342" Margin="10,121,10,0" VerticalAlignment="Top">
+            <Grid Margin="10,10,10,308">
+                <TextBox x:Name="tb_ledIP" HorizontalAlignment="Left" Height="24" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" Background="Transparent"
+                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledIP_TextChanged"/>
+                <TextBox x:Name="tb_ledPort" Height="24" Margin="88,0" TextWrapping="Wrap"  VerticalAlignment="Top" Background="Transparent"
+                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledPort_TextChanged"/>
+                <TextBox x:Name="tb_ledURL" HorizontalAlignment="Left" Height="24" Margin="170,0,0,0" TextWrapping="Wrap" Text="/body" VerticalAlignment="Top" Width="81" Background="Transparent"
+                         IsHitTestVisible="True" ToolTip="Bot Twitch Username"/>
+            </Grid>
+            <Grid Margin="10,39,24,277">
+                <TextBox x:Name="tb_led" HorizontalAlignment="Left" Height="22" Margin="88,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" Background="Transparent"
+                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" IsEnabled="False" Text="null" RenderTransformOrigin="0.62,0.818"/>
+                <CheckBox x:Name="cb_ledAll" Content="All LEDs" HorizontalAlignment="Left" Margin="175,6,0,0" VerticalAlignment="Top" IsChecked="True" Unchecked="cb_ledAll_Unchecked" Checked="cb_ledAll_Checked"/>
+                <Label Content="LED Control" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            </Grid>
+            <Grid Margin="10,71,10,0" Height="41" VerticalAlignment="Top">
+                <TextBox x:Name="tb_ledH" HorizontalAlignment="Left" Height="18" Margin="85,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" Background="Transparent"
+                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledH_TextChanged"/>
+                <Slider x:Name="sl_led" HorizontalAlignment="Left" Margin="0,23,0,0" VerticalAlignment="Top" Width="246" Maximum="255"  ValueChanged="sl_led_ValueChanged"/>
+                <Label Content="Brightness" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+            </Grid>
+            <Grid Margin="10,112,10,0" Height="40" VerticalAlignment="Top">
+                <TextBox x:Name="tb_ledR" HorizontalAlignment="Left" Height="18" Margin="85,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" Background="Transparent"
+                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledR_TextChanged"/>
+                <Label Content="Red Value" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
+                <Slider x:Name="sl_R" HorizontalAlignment="Left" Margin="0,22,0,0" VerticalAlignment="Top" Width="246" Maximum="255"  ValueChanged="sl_R_ValueChanged"/>
+            </Grid>
+            <Grid Margin="10,152,10,0" Height="40" VerticalAlignment="Top">
+                <TextBox x:Name="tb_ledG" HorizontalAlignment="Left" Height="18" Margin="85,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" Background="Transparent"
+                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledG_TextChanged"/>
+                <Label Content="Green Value" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
+                <Slider x:Name="sl_G" HorizontalAlignment="Left" Margin="0,22,0,0" VerticalAlignment="Top" Width="246" Maximum="255" ValueChanged="sl_G_ValueChanged"/>
+            </Grid>
+            <Grid Margin="10,187,10,0" Height="40" VerticalAlignment="Top">
+                <TextBox x:Name="tb_ledB" HorizontalAlignment="Left" Height="18" Margin="85,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" Background="Transparent"
+                    IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledB_TextChanged"/>
+                <Label Content="Blue Value" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
+                <Slider x:Name="sl_B" HorizontalAlignment="Left" Margin="0,22,0,0" VerticalAlignment="Top" Width="246" Maximum="255" ValueChanged="sl_B_ValueChanged"/>
+            </Grid>
+            <Grid Margin="18,232,17,0" Height="95" VerticalAlignment="Top">
+                <Button x:Name="led_red" Content="red" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="led_red_Click"/>
+                <Button x:Name="led_green" Content="green" HorizontalAlignment="Left" Margin="80,0,0,0" VerticalAlignment="Top" Width="75" Click="led_green_Click"/>
+                <Button x:Name="led_blue" Content="blue" HorizontalAlignment="Left" Margin="160,0,0,0" VerticalAlignment="Top" Width="75" Click="led_blue_Click"/>
+                <Button x:Name="led_pink" Content="pink" HorizontalAlignment="Left" Margin="0,25,0,0" VerticalAlignment="Top" Width="75" Click="led_pink_Click"/>
+                <Button x:Name="led_white" Content="white" HorizontalAlignment="Left" Margin="80,25,0,0" VerticalAlignment="Top" Width="75" Click="led_white_Click"/>
+                <Button x:Name="led_orange" Content="orange" HorizontalAlignment="Left" Margin="160,25,0,0" VerticalAlignment="Top" Width="75" Click="led_orange_Click"/>
+                <Button x:Name="led_yellow" Content="yellow" HorizontalAlignment="Left" Margin="0,50,0,0" VerticalAlignment="Top" Width="75" Click="led_yellow_Click"/>
+                <Button x:Name="led_cyan" Content="cyan" HorizontalAlignment="Left" Margin="80,50,0,0" VerticalAlignment="Top" Width="75" Click="led_cyan_Click"/>
+                <Button x:Name="led_purple" Content="purple" HorizontalAlignment="Left" Margin="160,50,0,0" VerticalAlignment="Top" Width="75" Click="led_purple_Click"/>
+                <ComboBox x:Name="cb_devices" HorizontalAlignment="Left" Margin="0,73,0,0" VerticalAlignment="Top" Width="75" Height="22" SelectionChanged="cb_devices_SelectionChanged">
+                    <ComboBoxItem Content="LED Wall"/>
+                    <ComboBoxItem Content="OnAir"/>
+                </ComboBox>
+                <Button x:Name="b_lightsOn" Content="On" HorizontalAlignment="Left" Margin="80,75,0,0" VerticalAlignment="Top" Width="38" Click="b_lightsOn_Click"/>
+                <Button x:Name="b_lightsOff" Content="Off" HorizontalAlignment="Left" Margin="123,75,0,0" VerticalAlignment="Top" Width="32" Click="b_lightsOff_Click"/>
+                <Button x:Name="led_apply" IsEnabled="True" Content="Apply" HorizontalAlignment="Left" Margin="160,75,0,0" VerticalAlignment="Top" Width="75" Click="led_apply_Click"/>
+            </Grid>
+        </Grid>
 
 
     </Grid>
