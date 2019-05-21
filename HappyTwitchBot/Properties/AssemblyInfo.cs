@@ -51,5 +51,20 @@ using System.Windows;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.1.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+
+// ursprüngliche AssemblyVersion 1.0.0.0
+// Features bis jetzt:
+// Grafische Oberfläche zur Eingabe von Verbindungsinformationen, zum Verbinden und Steuerung der LED Cluster
+// ircClient zum Senden der Verbindungsinformationen und Senden und Empfangen von
+//      TwitchCommands/Messages (Senden von Commands und Messages nur verwendet für den Verbindungsaufbau; senden über die Oberfläche zu diesem Zeitpunkt nicht implementiert)
+// ircPattern zum erkennen von Twitchchat Befehlen (!led etc.) und Twitch Debug Messages
+//
+//1.0.1.0
+//Überholung der Grafischen Oberfläche für leichtere Bearbeitung und Bedienung
+//          einige Initialisierungswerte in TextBoxen gelöscht (wieder implementieren -)
+//Implementierung der Speicherung der Verbindungsinformationen in HappyTwitchBot.exe.config
+
+

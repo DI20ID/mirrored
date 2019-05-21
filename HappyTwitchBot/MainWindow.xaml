@@ -5,19 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HappyTwitchBot"
         mc:Ignorable="d"
-        Title="Happy Twitch Bot" Height="493.674" Width="297.468" ResizeMode="CanMinimize" Closing="Window_Closing">
+        Title="Happy Twitch Bot" Height="518.674" Width="297.468" ResizeMode="CanMinimize" ContentRendered="MainWindow_OnContentRendered" Closing="Window_Closing">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
     </Window.Resources>
-
-    <Grid Height="464" VerticalAlignment="Top">
+    <DockPanel>
+        <Grid DockPanel.Dock="Top" Height="464" VerticalAlignment="Top">
         <Grid x:Name="g_connect" HorizontalAlignment="Left" Height="111" Margin="10,10,0,0" VerticalAlignment="Top" Width="258">
 
-            <TextBox x:Name="tb_username" HorizontalAlignment="Left" Height="23" Margin="7,7,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Background="Transparent"
-        		IsHitTestVisible="True" TextChanged="tb_username_TextChanged" GotFocus="tb_username_GotFocus" LostFocus="tb_username_LostFocus" ToolTip="Bot Twitch Username"/>
-            <TextBox x:Name="tb_channel" HorizontalAlignment="Left" Height="23" Margin="132,7,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="117" Background="Transparent" 
-        		GotFocus="tb_channel_GotFocus" LostFocus="tb_channel_LostFocus" ToolTip="Bot will join this channel"/>
+            <TextBox x:Name="tb_username" HorizontalAlignment="Left" Height="23" Margin="7,7,0,0" Text="" VerticalAlignment="Top" Width="120" Background="Transparent"
+        		IsHitTestVisible="True" TextChanged="tb_username_TextChanged" GotFocus="tb_username_GotFocus" LostFocus="tb_username_LostFocus" ToolTip="Bot Twitch Username" MaxLines="1"/>
+            <TextBox x:Name="tb_channel" HorizontalAlignment="Left" Height="23" Margin="132,7,0,0" Text="" VerticalAlignment="Top" Width="117" Background="Transparent" 
+        		GotFocus="tb_channel_GotFocus" LostFocus="tb_channel_LostFocus" ToolTip="Bot will join this channel" MaxLines="1"/>
             <PasswordBox x:Name="tb_password" HorizontalAlignment="Left" Margin="7,35,0,0" VerticalAlignment="Top" Height="23" Width="120" GotFocus="tb_password_GotFocus" LostFocus="tb_password_LostFocus"/>
             <CheckBox x:Name="cb_remember" Content="Remember Me" HorizontalAlignment="Left" Margin="141,39,0,0" VerticalAlignment="Top"/>
             <Button x:Name="b_connect" Content="Connect" HorizontalAlignment="Left" Margin="7,79,0,0" VerticalAlignment="Top" Width="243" FontSize="14 px" BorderThickness="1" 
@@ -25,46 +25,46 @@
             <Label x:Name="l_getpassword" Content="Get password from" HorizontalAlignment="Left" Margin="32,55,0,0" VerticalAlignment="Top" FontSize="10.667"/>
             <Label x:Name="l_passwordlink" Content="PW LINK" HorizontalAlignment="Left" Margin="132,55,0,0" VerticalAlignment="Top" FontSize="10.667" Foreground="#FF1700FF" FontWeight="Bold" MouseLeftButtonUp="l_passwordlink_MouseLeftButtonUp"/>
         </Grid>
-        <Grid x:Name="g_led" Height="342" Margin="10,121,10,0" VerticalAlignment="Top">
+        <Grid x:Name="g_led" Height="342" Margin="10,121,0,0" VerticalAlignment="Top">
             <Grid Margin="10,10,10,308">
-                <TextBox x:Name="tb_ledIP" HorizontalAlignment="Left" Height="24" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" Background="Transparent"
-                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledIP_TextChanged"/>
-                <TextBox x:Name="tb_ledPort" Height="24" Margin="88,0" TextWrapping="Wrap"  VerticalAlignment="Top" Background="Transparent"
-                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledPort_TextChanged"/>
-                <TextBox x:Name="tb_ledURL" HorizontalAlignment="Left" Height="24" Margin="170,0,0,0" TextWrapping="Wrap" Text="/body" VerticalAlignment="Top" Width="81" Background="Transparent"
-                         IsHitTestVisible="True" ToolTip="Bot Twitch Username"/>
+                <TextBox x:Name="tb_ledIP" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="75" Background="Transparent"
+                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledIP_TextChanged" MaxLines="1"/>
+                <TextBox x:Name="tb_ledPort" Height="24" Margin="88,0"  VerticalAlignment="Top" Background="Transparent"
+                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledPort_TextChanged" MaxLines="1"/>
+                <TextBox x:Name="tb_ledURL" HorizontalAlignment="Left" Height="24" Margin="170,0,0,0" VerticalAlignment="Top" Width="81" Background="Transparent"
+                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" MaxLines="1"/>
             </Grid>
             <Grid Margin="10,39,24,277">
-                <TextBox x:Name="tb_led" HorizontalAlignment="Left" Height="22" Margin="88,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" Background="Transparent"
-                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" IsEnabled="False" Text="null" RenderTransformOrigin="0.62,0.818"/>
+                <TextBox x:Name="tb_led" HorizontalAlignment="Left" Height="22" Margin="88,4,0,0" VerticalAlignment="Top" Width="75" Background="Transparent"
+                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" IsEnabled="False" Text="null" RenderTransformOrigin="0.62,0.818" MaxLines="1"/>
                 <CheckBox x:Name="cb_ledAll" Content="All LEDs" HorizontalAlignment="Left" Margin="175,6,0,0" VerticalAlignment="Top" IsChecked="True" Unchecked="cb_ledAll_Unchecked" Checked="cb_ledAll_Checked"/>
                 <Label Content="LED Control" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             </Grid>
-            <Grid Margin="10,71,10,0" Height="41" VerticalAlignment="Top">
-                <TextBox x:Name="tb_ledH" HorizontalAlignment="Left" Height="18" Margin="85,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" Background="Transparent"
-                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledH_TextChanged"/>
+            <Grid Margin="10,71,0,0" Height="41" VerticalAlignment="Top">
+                <TextBox x:Name="tb_ledH" HorizontalAlignment="Left" Height="18" Margin="85,5,0,0" VerticalAlignment="Top" Width="36" Background="Transparent"
+                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledH_TextChanged" MaxLines="1"/>
                 <Slider x:Name="sl_led" HorizontalAlignment="Left" Margin="0,23,0,0" VerticalAlignment="Top" Width="246" Maximum="255"  ValueChanged="sl_led_ValueChanged"/>
                 <Label Content="Brightness" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
             </Grid>
-            <Grid Margin="10,112,10,0" Height="40" VerticalAlignment="Top">
-                <TextBox x:Name="tb_ledR" HorizontalAlignment="Left" Height="18" Margin="85,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" Background="Transparent"
-                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledR_TextChanged"/>
+            <Grid Margin="10,112,0,0" Height="40" VerticalAlignment="Top">
+                <TextBox x:Name="tb_ledR" HorizontalAlignment="Left" Height="18" Margin="85,4,0,0" VerticalAlignment="Top" Width="36" Background="Transparent"
+                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledR_TextChanged" MaxLines="1"/>
                 <Label Content="Red Value" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
                 <Slider x:Name="sl_R" HorizontalAlignment="Left" Margin="0,22,0,0" VerticalAlignment="Top" Width="246" Maximum="255"  ValueChanged="sl_R_ValueChanged"/>
             </Grid>
-            <Grid Margin="10,152,10,0" Height="40" VerticalAlignment="Top">
-                <TextBox x:Name="tb_ledG" HorizontalAlignment="Left" Height="18" Margin="85,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" Background="Transparent"
-                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledG_TextChanged"/>
+            <Grid Margin="10,152,0,0" Height="40" VerticalAlignment="Top">
+                <TextBox x:Name="tb_ledG" HorizontalAlignment="Left" Height="18" Margin="85,4,0,0" VerticalAlignment="Top" Width="36" Background="Transparent"
+                         IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledG_TextChanged" MaxLines="1"/>
                 <Label Content="Green Value" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
                 <Slider x:Name="sl_G" HorizontalAlignment="Left" Margin="0,22,0,0" VerticalAlignment="Top" Width="246" Maximum="255" ValueChanged="sl_G_ValueChanged"/>
             </Grid>
             <Grid Margin="10,187,10,0" Height="40" VerticalAlignment="Top">
-                <TextBox x:Name="tb_ledB" HorizontalAlignment="Left" Height="18" Margin="85,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" Background="Transparent"
-                    IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledB_TextChanged"/>
+                <TextBox x:Name="tb_ledB" HorizontalAlignment="Left" Height="18" Margin="85,4,0,0" VerticalAlignment="Top" Width="36" Background="Transparent"
+                    IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledB_TextChanged" MaxLines="1"/>
                 <Label Content="Blue Value" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
                 <Slider x:Name="sl_B" HorizontalAlignment="Left" Margin="0,22,0,0" VerticalAlignment="Top" Width="246" Maximum="255" ValueChanged="sl_B_ValueChanged"/>
             </Grid>
-            <Grid Margin="18,232,17,0" Height="95" VerticalAlignment="Top">
+            <Grid Margin="13,232,0,0" Height="95" VerticalAlignment="Top">
                 <Button x:Name="led_red" Content="red" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="led_red_Click"/>
                 <Button x:Name="led_green" Content="green" HorizontalAlignment="Left" Margin="80,0,0,0" VerticalAlignment="Top" Width="75" Click="led_green_Click"/>
                 <Button x:Name="led_blue" Content="blue" HorizontalAlignment="Left" Margin="160,0,0,0" VerticalAlignment="Top" Width="75" Click="led_blue_Click"/>
@@ -83,7 +83,12 @@
                 <Button x:Name="led_apply" IsEnabled="True" Content="Apply" HorizontalAlignment="Left" Margin="160,75,0,0" VerticalAlignment="Top" Width="75" Click="led_apply_Click"/>
             </Grid>
         </Grid>
+        
 
 
     </Grid>
+        <StatusBar DockPanel.Dock="Bottom" Height="20">
+            <Label x:Name="l_connectedstatus" Width="94" Content="Text" Margin="0,-8,0,-5"/>
+        </StatusBar>
+    </DockPanel>
 </Window>

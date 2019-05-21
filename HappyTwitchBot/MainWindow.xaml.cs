@@ -1,102 +1,245 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Controls;
 using System.Threading;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Media;
 
 
 namespace HappyTwitchBot
 {
     public partial class MainWindow : Window
     {
+        
         internal ircClient irc = new ircClient();
+        internal Configuration AppConfig;
+
+        private readonly string _sConfigurationPath = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+        
         internal string sUsername = "";
         internal string sPassword = "";
-        internal string channel = "";
+        internal string sChannel = "";
         public string logging = "";
+        internal bool connected = false;
 
         internal LED led = new LED();
-
-
 
         // entry point
         public MainWindow()
         {
             InitializeComponent();
-            l_passwordlink.Content = ircPatterns.passwordlink;
-            tb_username.Text = "CHANGEME";        //temporary username - DELETE ON FINAL RELEASE
-            tb_password.Password = "CHANGEME";         //temporary password - DELETE ON FINAL RELEASE
-            tb_channel.Text = "CHANGEME";
+            assemblydebugline();
+            if (File.Exists(_sConfigurationPath)) AppConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            //create costum config file and load it
+            else
+            {
+                System.Text.StringBuilder sb = new StringBuilder();
+                sb.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
+                sb.AppendLine("<configuration>");
+                sb.AppendLine(" <startup>");
+                sb.AppendLine("     <supportedRuntime version = \"v4.0\" sku = \".NETFramework,Version=v4.5.2\"/>");
+                sb.AppendLine(" </startup>");
+                sb.AppendLine("</configuration>");
+
+                string loc = Assembly.GetEntryAssembly().Location;
+                System.IO.File.WriteAllText(String.Concat(loc, ".Config"), sb.ToString());
+                AppConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                AppConfig.AppSettings.Settings.Add("User", "");
+                AppConfig.AppSettings.Settings.Add("Password", "");
+                AppConfig.AppSettings.Settings.Add("Channel", "");
+                AppConfig.AppSettings.Settings.Add("cb_remember", "");
+                AppConfig.Save();
+                AppConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            }
+            ReadSettings();
             
+        }
+
+        private void assemblydebugline()//writes assemblyinfo to output window
+        {
+            Assembly thisAssem = Assembly.GetEntryAssembly(); ;
+            AssemblyName thisAssemName = thisAssem.GetName();
+            Version ver = thisAssemName.Version;
+            Debug.WriteLine("This is version {0} of {1}.", ver, thisAssemName.Name);
+            Debug.WriteLine(_sConfigurationPath);
+            Debug.WriteLine(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+        }
+
+
+        private void ReadSettings()
+        {
+            if (AppConfig.AppSettings.Settings["cb_remember"].Value != "")          //implement ty for boolean value of cb_remember
+            {
+
+                
+
+                
+                
+                tb_username.Text = sUsername = AppConfig.AppSettings.Settings["sUsername"].Value;
+                tb_password.Password = sPassword = AppConfig.AppSettings.Settings["sPassword"].Value;
+                tb_channel.Text = sChannel = AppConfig.AppSettings.Settings["sChannel"].Value;
+                cb_remember.IsChecked = true;
+            }
+        }
+
+        private void SaveSettings()
+        {
+            
+            
+
+                sUsername = tb_username.Text;
+                sPassword = tb_password.Password;
+                sChannel = tb_channel.Text;
+
+                Dictionary<string, string> clientSettings = new Dictionary<string, string>();
+                clientSettings.Add("sUsername", sUsername);
+                clientSettings.Add("sPassword", sPassword);
+                clientSettings.Add("sChannel", sChannel);
+                clientSettings.Add("cb_remember", cb_remember.IsChecked.ToString());
+
+                foreach (string element in AppConfig.AppSettings.Settings.AllKeys)
+                {
+                        AppConfig.AppSettings.Settings[element].Value = clientSettings[element];
+                }
+                AppConfig.Save();
+            
+        }
+        private void ClearSettings()
+        {
+            
+                foreach (string element in AppConfig.AppSettings.Settings.AllKeys)
+                {
+                    AppConfig.AppSettings.Settings[element].Value = "";
+                }
+                AppConfig.Save();
+            
+        }
+
+        private void MainWindow_OnContentRendered(object sender, EventArgs e)
+        {
+            l_passwordlink.Content = ircPatterns.passwordlink;
+            l_connectedstatus.Foreground = Brushes.Red;
+            l_connectedstatus.Content = "Disconnected";
+
         }
 
         #region EVENTHANDLER
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+
+            if(cb_remember.IsChecked.Value) SaveSettings();
+            else ClearSettings();
             Environment.Exit(Environment.ExitCode);
         }
+        
 
         // connect button click
         private void b_connect_Click(object sender, RoutedEventArgs e)
         {
-
-            g_connect.IsEnabled = false;
-
-
-
-            sUsername = tb_username.Text;
-            sPassword = tb_password.Password;
-            channel = tb_channel.Text;
-
-
-            // irc = new ircClient("irc.twitch.tv", 443, sUsername, sPassword);
-            WebClient serverapi = new WebClient();
-            string serverlist = serverapi.DownloadString("http://tmi.twitch.tv/servers?channel=" + channel);
-            serverlist = serverlist.Replace(@"{""cluster"":""event"",""servers"":[""", "");
-            serverlist = serverlist.Replace(@"{""cluster"":""main"",""servers"":[""", "");
-            serverlist = serverlist.Replace(@"{""cluster"":""aws"",""servers"":[""", "");
-            serverlist = serverlist.Split('"')[0];
-            //string ip = serverlist.Split(':')[0];
-            string ip = "irc.chat.twitch.tv";
-            //int port = Int32.Parse(serverlist.Split(':')[1]);
-            int port = 80;
-
-
-
-            irc = new ircClient(ip, port, sUsername, sPassword);
-            irc.RequestMembership();
-            irc.RequestTags();
-            irc.joinRoom(channel);
-            int sleep = 0;
-            bool connected = false;
-
-            while (connected == false && sleep <= 1000)
+            if(cb_remember.IsChecked.Value) SaveSettings();
+            else  ClearSettings();
+            
+                if (!this.connected)
             {
-                if (irc.tcpClient.Available != 0)
-                { connected = true; }
+                sUsername = tb_username.Text;
+                sPassword = tb_password.Password;
+                sChannel = tb_channel.Text;
+
+                tb_username.IsEnabled = false;
+                tb_password.IsEnabled = false;
+                tb_channel.IsEnabled = false;
+                b_connect.IsEnabled = false;
+
+
+                // irc = new ircClient("irc.twitch.tv", 443, sUsername, sPassword);
+                WebClient serverapi = new WebClient();
+                string serverlist = serverapi.DownloadString("http://tmi.twitch.tv/servers?channel=" + sChannel);
+                serverlist = serverlist.Replace(@"{""cluster"":""event"",""servers"":[""", "");
+                serverlist = serverlist.Replace(@"{""cluster"":""main"",""servers"":[""", "");
+                serverlist = serverlist.Replace(@"{""cluster"":""aws"",""servers"":[""", "");
+                serverlist = serverlist.Split('"')[0];
+                //string ip = serverlist.Split(':')[0];
+                string ip = "irc.chat.twitch.tv";
+                //int port = Int32.Parse(serverlist.Split(':')[1]);
+                int port = 80;
+
+                irc = new ircClient(ip, port, sUsername, sPassword);
+                irc.RequestMembership();
+                irc.RequestTags();
+                irc.joinRoom(sChannel);
+                int sleep = 0;
+                connected = false;
+
+                while (connected == false && sleep <= 1000)
+                {
+                    if (irc.tcpClient.Available != 0)
+                    {
+                        connected = true;
+                    }
+                    else
+                    {
+
+                        sleep++;
+                        Thread.Sleep(5);
+                    }
+                }
+
+                if (connected == true)
+                {
+                    Thread ircThread = new Thread(irc.WatchDog);
+                    ircThread.Start();
+                    b_connect.IsEnabled = true;
+                    l_connectedstatus.Foreground = Brushes.Green;
+                    l_connectedstatus.Content = "Connected";
+                    b_connect.Content = "Disconnect";
+                }
                 else
                 {
-
-                    sleep++;
-                    Thread.Sleep(5);
+                    MessageBox.Show("Connection Failed", "Error");
+                    
                 }
             }
+            else if (this.connected)
+            {
 
-            if (connected == true)
-            {
-                Thread ircThread = new Thread(irc.WatchDog);
-                ircThread.Start();
-            }
-            else
-            {
-                MessageBox.Show("Connection Failed", "Error");
-                g_connect.IsEnabled = true;
+
+                int sleep = 0;
+                irc.disconnect();
+                while (connected == true && sleep <= 1000)
+                {
+                    if (irc.tcpClient.Available != 0)
+                    {
+                        connected = false;
+                    }
+                    else
+                    {
+
+                        sleep++;
+                        Thread.Sleep(5);
+                    }
+                }
+
+
+
+                tb_username.IsEnabled = true;
+                tb_password.IsEnabled = true;
+                tb_channel.IsEnabled = true;
+                b_connect.IsEnabled = true;
+                l_connectedstatus.Foreground = Brushes.Red;
+                l_connectedstatus.Content = "Disconnected";
+                b_connect.Content = "Connect";
+
             }
         }
-
 
         // button test Click
 
@@ -104,8 +247,8 @@ namespace HappyTwitchBot
 
 
 
-        // textbox username TextChanged
-        private void tb_username_TextChanged(object sender, TextChangedEventArgs e)
+            // textbox username TextChanged
+         private void tb_username_TextChanged(object sender, TextChangedEventArgs e)
         {
 
         }
@@ -472,5 +615,7 @@ namespace HappyTwitchBot
             */
             tb_ledIP.Text = "10.0.0.136";
         }
+
+        
     }
 }

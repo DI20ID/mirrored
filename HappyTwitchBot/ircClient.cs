@@ -98,15 +98,50 @@ namespace HappyTwitchBot
 
         public string readMessage()                     //read irc input stream - 1 line each time
         {                                               //WARNING: This function will wait on "inputStream.ReadLine()" until data is received
-            string message = inputStream.ReadLine();    //read line from input stream
+            string message = inputStream.ReadLine();
+            //read line from input stream
             return message;                             //return the line
         }
 
         public string capIRCString(string StrToCap)
         {
+            writetologfile(StrToCap);
             int capmark = StrToCap.IndexOf("#" + channel);
             StrToCap = StrToCap.Substring(capmark + channel.Length + 3);
             return StrToCap;
+        }
+
+        public void disconnect()
+        {
+            outputStream.WriteLine("/disconnect");     // send correct syntax to irc stream to join the channel
+            outputStream.Flush();
+        }
+
+        public void writetologfile()
+        {
+            if (File.Exists(logfilepath))               //write logfile
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@logfilepath, true))
+                    //write log file
+                {
+                    file.WriteLine(ircString);
+                    file.Close();
+                }
+
+            }
+        }
+        public void writetologfile(string message)
+        {
+            if (File.Exists(logfilepath))               //write logfile
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@logfilepath, true))
+                    //write log file
+                {
+                    file.WriteLine(message);
+                    file.Close();
+                }
+
+            }
         }
 
         public void WatchDog()                     // continously read irc input stream as long as ReadStream Enabled == true 
@@ -127,17 +162,8 @@ namespace HappyTwitchBot
 
                     }
                 }
-                
-                if (File.Exists(logfilepath))               //write logfile
-                {
-                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(@logfilepath, true))
-                        //write log file
-                    {
-                        file.WriteLine(ircString);
-                        file.Close();
-                    }
-                    
-                }
+
+                writetologfile();
 
                 //Not included for now since it only works for smaller channels
                 /*
@@ -194,13 +220,14 @@ namespace HappyTwitchBot
                     MessageBox.Show("Login Failed. \nWrong password and/or username!\n\nDetails: " + ircString, "Error");
                     Initialization = false;
                     ReadStreamEnabled = false;
-
+                    writetologfile();
                     continue;
                 }
                 if (ircString.Contains(ircPatterns.userlistend))
                 {
                     ReadStreamEnabled = true;
                     Initialization = false;
+                    writetologfile();
                 }
             }
 
@@ -246,6 +273,7 @@ namespace HappyTwitchBot
         }
         public void PatternCheck(string pattern)
         {
+            writetologfile(ircPatterns.chatmessage);
             if (pattern != null)
             {
                 if (pattern == ircPatterns.ping)            //ping reply to twitch (every 5 minutes)
@@ -253,9 +281,10 @@ namespace HappyTwitchBot
                     sendIrcMessage(ircPatterns.pong);
                     return;
                 }
-
+                
                 if (pattern.Contains(ircPatterns.chatmessage + channel))        //chatmessages
                 {
+                    
                     twitchuser userfocus = AddUser(pattern);
                     string messagefocus = capIRCString(pattern);
 
@@ -358,6 +387,7 @@ namespace HappyTwitchBot
                         }
                     }
                 }
+                
             
             
             }
