@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -22,6 +23,7 @@ namespace HappyTwitchBot
         
         internal ircClient irc = new ircClient();
         internal Configuration AppConfig;
+        internal TcpClient xcomTcpClient;
 
         private readonly string _sConfigurationPath = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
         
@@ -32,6 +34,10 @@ namespace HappyTwitchBot
         internal bool connected = false;
 
         internal LED led = new LED();
+
+
+        private StreamReader inputStream;
+
 
         // entry point
         public MainWindow()
@@ -130,6 +136,10 @@ namespace HappyTwitchBot
             l_connectedstatus.Foreground = Brushes.Red;
             l_connectedstatus.Content = "Disconnected";
 
+            tb_DebugWindow.Visibility = Visibility.Collapsed;
+            g_led.Visibility = Visibility.Collapsed;
+            sp_XCOM.Visibility = Visibility.Collapsed;
+
         }
 
         #region EVENTHANDLER
@@ -148,7 +158,7 @@ namespace HappyTwitchBot
             if(cb_remember.IsChecked.Value) SaveSettings();
             else  ClearSettings();
             
-                if (!this.connected)
+            if (!this.connected)
             {
                 sUsername = tb_username.Text;
                 sPassword = tb_password.Password;
@@ -242,11 +252,7 @@ namespace HappyTwitchBot
         }
 
         // button test Click
-
-
-
-
-
+        
             // textbox username TextChanged
          private void tb_username_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -616,6 +622,53 @@ namespace HappyTwitchBot
             tb_ledIP.Text = "10.0.0.136";
         }
 
-        
+
+        private void T_b_showdebugwindow_OnChecked(object sender, RoutedEventArgs e)
+        {
+            tb_DebugWindow.Visibility = Visibility.Visible;
+        }
+
+        private void T_b_XCOM_OnChecked(object sender, RoutedEventArgs e)
+        {
+            sp_XCOM.Visibility = Visibility.Visible;
+        }
+
+        private void T_b_LED_OnChecked(object sender, RoutedEventArgs e)
+        {
+            g_led.Visibility = Visibility.Visible;
+        }
+
+        private void T_b_XCOM_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            sp_XCOM.Visibility = Visibility.Collapsed;
+        }
+
+        private void T_b_showdebugwindow_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            tb_DebugWindow.Visibility = Visibility.Collapsed;
+        }
+
+        private void T_b_LED_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            g_led.Visibility = Visibility.Collapsed;
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void XcomTcpconnect()
+        {
+            
+        }
+
+        public void XCOMWatchDog()                     
+        {                                               
+
+           
+        }
+
+
     }
 }

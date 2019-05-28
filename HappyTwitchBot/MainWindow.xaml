@@ -18,23 +18,21 @@
         </DataTemplate>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
     </Window.Resources>
-    <DockPanel LastChildFill="True">
+    <StackPanel>
 
-        <StatusBar DockPanel.Dock="Bottom" Margin="0,0,0,0">
-            <Label x:Name="l_connectedstatus" Content="Text" Margin="0" Padding="-3"/>
-        </StatusBar>
+        
         <StackPanel Orientation="Horizontal">
             <StackPanel>
-                <ToggleButton x:Name="t_b_showdebugwindow" Content="showdebugwindow" />
+                <ToggleButton x:Name="t_b_showdebugwindow" Content="showdebugwindow" Checked="T_b_showdebugwindow_OnChecked" Unchecked="T_b_showdebugwindow_OnUnchecked"/>
                 <ToggleButton x:Name="t_b_show_debug" Content="show debug"/>
                 <ToggleButton x:Name="t_b_show_chat" Content="show chat"/>
                 <ToggleButton x:Name="t_b_only_show_commands" Content="only show commands"/>
                 <ToggleButton x:Name="t_b_only_show_xcom_commands" Content="only show xcom commands"/>
-                <ToggleButton x:Name="t_b_XCOM" Content="XCOM"/>
-                <ToggleButton x:Name="t_b_LED" Content="LED"/>
+                <ToggleButton x:Name="t_b_XCOM" Content="XCOM" Checked="T_b_XCOM_OnChecked" Unchecked="T_b_XCOM_OnUnchecked"/>
+                <ToggleButton x:Name="t_b_LED" Content="LED" Checked="T_b_LED_OnChecked" Unchecked="T_b_LED_OnUnchecked"/>
 
             </StackPanel>
-            <StackPanel DockPanel.Dock="Bottom" MinWidth="247" MinHeight="420">
+            <StackPanel DockPanel.Dock="Bottom" MinWidth="247">
                 <Grid x:Name="g_connect" Margin="2.5,2.5,2.5,0" Grid.IsSharedSizeScope="True" >
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -46,6 +44,7 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
+                    <Border BorderBrush="Black" BorderThickness="1" Grid.RowSpan="4" Grid.ColumnSpan="2"/>
                     <TextBox x:Name="tb_username"       Margin="2.5" Text="" Padding="3" Background="Transparent" IsHitTestVisible="True" TextChanged="tb_username_TextChanged" GotFocus="tb_username_GotFocus" LostFocus="tb_username_LostFocus" ToolTip="Bot Twitch Username" MaxLines="1"/>
                     <TextBox x:Name="tb_channel"        Margin="2.5" Text="" Padding="3" Background="Transparent" GotFocus="tb_channel_GotFocus" LostFocus="tb_channel_LostFocus" ToolTip="Bot will join this channel" MaxLines="1" Grid.Column="1"/>
                     <PasswordBox x:Name="tb_password"   Margin="2.5" Padding="3" GotFocus="tb_password_GotFocus" LostFocus="tb_password_LostFocus" Grid.Row="1"/>
@@ -56,7 +55,6 @@
                     </DockPanel>
                     <Button x:Name="b_connect" Content="Connect" Margin="2.5,2.5,1.5,2.5" FontSize="15 px" BorderThickness="1" 
                     Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="b_connect_Click" Grid.ColumnSpan="2" Grid.Row="3" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                    <Border BorderBrush="Black" BorderThickness="1" Grid.RowSpan="4" Grid.ColumnSpan="2"/>
                 </Grid>
                 <StackPanel x:Name="g_led" Visibility="Visible" >
                     <Grid Margin="2.5,0,2.5,0">
@@ -152,8 +150,8 @@
                         <Button x:Name="led_apply" IsEnabled="True" Content="Apply" Margin="2.5" Click="led_apply_Click" Grid.Row="3" Grid.Column="2"/>
                     </Grid>
                 </StackPanel>
-                <StackPanel>
-                    <Grid>
+                <StackPanel x:Name="sp_XCOM">
+                    <Grid >
                         <Grid.RowDefinitions>
                             <RowDefinition/>
                             <RowDefinition/>
@@ -162,20 +160,22 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Button Content="Button"/>
+                        <Button Content="Connect" Click="ButtonBase_OnClick"/>
 
-                        <CheckBox Content="CheckBox" Grid.Row="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        <Label Content="Label" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                        <CheckBox Content="enable Game/Twitch communication" Grid.Row="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <Label Content="Disconnected" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                     </Grid>
 
-                    <TextBox x:Name="tb_SoldierNames" TextWrapping="Wrap" Text="TextBox" />
+                    <TextBox x:Name="tb_SoldierNames" TextWrapping="Wrap"/>
 
                 </StackPanel>
             </StackPanel>
             <TextBox x:Name="tb_DebugWindow" TextWrapping="Wrap" Width="120" Margin="5" Visibility="Visible"/>
 
         </StackPanel>
-
-    </DockPanel>
+        <StatusBar DockPanel.Dock="Bottom" Margin="0,0,0,0">
+            <Label x:Name="l_connectedstatus" Content="Text" Margin="0" Padding="-3"/>
+        </StatusBar>
+    </StackPanel>
 </Window>
 
