@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HappyTwitchBot"
         mc:Ignorable="d"
-        Title="Happy Twitch Bot" ContentRendered="MainWindow_OnContentRendered" Closing="Window_Closing" ResizeMode="CanResizeWithGrip" MinWidth="255" MinHeight="473" Width="255" Height="473">
+        Title="Happy Twitch Bot" SizeToContent="WidthAndHeight" ContentRendered="MainWindow_OnContentRendered" Closing="Window_Closing" ResizeMode="CanResizeWithGrip">
     <Window.Resources>
         <DataTemplate x:Key="template1">
             <Button Margin="10">
@@ -18,135 +18,161 @@
         </DataTemplate>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
     </Window.Resources>
-    <DockPanel>
-        <StatusBar DockPanel.Dock="Bottom" Margin="0,0,0,0" >
+    <DockPanel LastChildFill="True">
+
+        <StatusBar DockPanel.Dock="Bottom" Margin="0,0,0,0">
             <Label x:Name="l_connectedstatus" Content="Text" Margin="0" Padding="-3"/>
         </StatusBar>
-        <StackPanel DockPanel.Dock="Bottom">
-            <Grid x:Name="g_connect" Margin="2.5,2.5,2.5,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <TextBox x:Name="tb_username"       Margin="2.5" Text="" Padding="3" Background="Transparent" IsHitTestVisible="True" TextChanged="tb_username_TextChanged" GotFocus="tb_username_GotFocus" LostFocus="tb_username_LostFocus" ToolTip="Bot Twitch Username" MaxLines="1"/>
-                <TextBox x:Name="tb_channel"        Margin="2.5" Text="" Padding="3" Background="Transparent" GotFocus="tb_channel_GotFocus" LostFocus="tb_channel_LostFocus" ToolTip="Bot will join this channel" MaxLines="1" Grid.Column="1"/>
-                <PasswordBox x:Name="tb_password"   Margin="2.5" Padding="3" GotFocus="tb_password_GotFocus" LostFocus="tb_password_LostFocus" Grid.Row="1"/>
-                <CheckBox x:Name="cb_remember" Padding="3" Content="Remember Me" Margin="2.5" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
+        <StackPanel Orientation="Horizontal">
+            <StackPanel>
+                <ToggleButton x:Name="t_b_showdebugwindow" Content="showdebugwindow" />
+                <ToggleButton x:Name="t_b_show_debug" Content="show debug"/>
+                <ToggleButton x:Name="t_b_show_chat" Content="show chat"/>
+                <ToggleButton x:Name="t_b_only_show_commands" Content="only show commands"/>
+                <ToggleButton x:Name="t_b_only_show_xcom_commands" Content="only show xcom commands"/>
+                <ToggleButton x:Name="t_b_XCOM" Content="XCOM"/>
+                <ToggleButton x:Name="t_b_LED" Content="LED"/>
 
-                <DockPanel Grid.ColumnSpan="2" Grid.Row="2">
-                    <Label x:Name="l_getpassword" Content="Get password from" Margin="0" Padding="2" FontSize="10.667"/>
-                    <Label x:Name="l_passwordlink" Content="PW LINK" Margin="0" Padding="2" FontSize="10.667" Foreground="#FF1700FF" FontWeight="Bold" MouseLeftButtonUp="l_passwordlink_MouseLeftButtonUp"/>
-                </DockPanel>
-
-                <Button x:Name="b_connect" Content="Connect" Margin="2.5,2.5,1.5,2.5" FontSize="15 px" BorderThickness="1" 
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Bottom" MinWidth="247" MinHeight="420">
+                <Grid x:Name="g_connect" Margin="2.5,2.5,2.5,0" Grid.IsSharedSizeScope="True" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="tb_username"       Margin="2.5" Text="" Padding="3" Background="Transparent" IsHitTestVisible="True" TextChanged="tb_username_TextChanged" GotFocus="tb_username_GotFocus" LostFocus="tb_username_LostFocus" ToolTip="Bot Twitch Username" MaxLines="1"/>
+                    <TextBox x:Name="tb_channel"        Margin="2.5" Text="" Padding="3" Background="Transparent" GotFocus="tb_channel_GotFocus" LostFocus="tb_channel_LostFocus" ToolTip="Bot will join this channel" MaxLines="1" Grid.Column="1"/>
+                    <PasswordBox x:Name="tb_password"   Margin="2.5" Padding="3" GotFocus="tb_password_GotFocus" LostFocus="tb_password_LostFocus" Grid.Row="1"/>
+                    <CheckBox x:Name="cb_remember" Padding="3" Content="Remember Me" Margin="2.5" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
+                    <DockPanel Grid.ColumnSpan="2" Grid.Row="2">
+                        <Label x:Name="l_getpassword" Content="Get password from" Margin="0" Padding="2" FontSize="10.667"/>
+                        <Label x:Name="l_passwordlink" Content="PW LINK" Margin="0" Padding="2" FontSize="10.667" Foreground="#FF1700FF" FontWeight="Bold" MouseLeftButtonUp="l_passwordlink_MouseLeftButtonUp"/>
+                    </DockPanel>
+                    <Button x:Name="b_connect" Content="Connect" Margin="2.5,2.5,1.5,2.5" FontSize="15 px" BorderThickness="1" 
                     Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="b_connect_Click" Grid.ColumnSpan="2" Grid.Row="3" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-
-            </Grid>
-            <StackPanel x:Name="g_led" Visibility="Visible">
-                <Grid Margin="2.5,0,2.5,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="tb_ledIP" Margin="2.5"  Background="Transparent"
+                    <Border BorderBrush="Black" BorderThickness="1" Grid.RowSpan="4" Grid.ColumnSpan="2"/>
+                </Grid>
+                <StackPanel x:Name="g_led" Visibility="Visible" >
+                    <Grid Margin="2.5,0,2.5,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="tb_ledIP" Margin="2.5"  Background="Transparent"
                          IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledIP_TextChanged" MaxLines="1"/>
-                    <TextBox x:Name="tb_ledPort"  Margin="2.5" Background="Transparent"
+                        <TextBox x:Name="tb_ledPort"  Margin="2.5" Background="Transparent"
                          IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledPort_TextChanged" MaxLines="1" Grid.Column="1"/>
-                    <TextBox x:Name="tb_ledURL"  Margin="2.5" Background="Transparent"
+                        <TextBox x:Name="tb_ledURL"  Margin="2.5" Background="Transparent"
                          IsHitTestVisible="True" ToolTip="Bot Twitch Username" MaxLines="1" Grid.Column="2"/>
-                </Grid>
-                <Grid Margin="2.5,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Label Content="LED Control" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                    <TextBox x:Name="tb_led" Margin="2.5" Background="Transparent"
+                    </Grid>
+                    <Grid Margin="2.5,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="LED Control" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                        <TextBox x:Name="tb_led" Margin="2.5" Background="Transparent"
                          IsHitTestVisible="True" ToolTip="Bot Twitch Username" IsEnabled="False" Text="null" MaxLines="1" Grid.Column="1"/>
-                    <CheckBox x:Name="cb_ledAll" Content="All LEDs" Margin="2.5" IsChecked="True" Unchecked="cb_ledAll_Unchecked" Checked="cb_ledAll_Checked" Grid.Column="2" Padding="0" Grid.IsSharedSizeScope="True" VerticalContentAlignment="Center"/>
+                        <CheckBox x:Name="cb_ledAll" Content="All LEDs" Margin="2.5" IsChecked="True" Unchecked="cb_ledAll_Unchecked" Checked="cb_ledAll_Checked" Grid.Column="2" Padding="0" Grid.IsSharedSizeScope="True" VerticalContentAlignment="Center"/>
 
-                </Grid>
-                <Grid Margin="2.5,0,2.5,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <Label Content="Brightness" Margin="10,0,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                    <TextBox x:Name="tb_ledH" Margin="2.5" Background="Transparent"
+                    </Grid>
+                    <Grid Margin="2.5,0,2.5,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Label Content="Brightness" Margin="10,0,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                        <TextBox x:Name="tb_ledH" Margin="2.5" Background="Transparent"
                          IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledH_TextChanged" MaxLines="1" Grid.Column="1" HorizontalAlignment="Left" MinWidth="25"/>
-                    <Slider x:Name="sl_led" Margin="5,-3" Maximum="255"  ValueChanged="sl_led_ValueChanged" Grid.ColumnSpan="2" Grid.Row="1"/>
-
-                    <Label Content="Red Value" Margin="10,0,0,0" Grid.Row="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                    <TextBox x:Name="tb_ledR" Margin="2.5" Background="Transparent"
+                        <Slider x:Name="sl_led" Margin="5,-3" Maximum="255"  ValueChanged="sl_led_ValueChanged" Grid.ColumnSpan="2" Grid.Row="1"/>
+                        <Label Content="Red Value" Margin="10,0,0,0" Grid.Row="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                        <TextBox x:Name="tb_ledR" Margin="2.5" Background="Transparent"
                          IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledR_TextChanged" MaxLines="1" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" MinWidth="24"/>
-                    <Slider x:Name="sl_R" Margin="5,-3" Maximum="255"  ValueChanged="sl_R_ValueChanged" Grid.Row="3" Grid.ColumnSpan="2"/>
-
-                    <Label Content="Green Value" Margin="10,0,0,0" Grid.Row="4" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                    <TextBox x:Name="tb_ledG" Margin="2.5" Background="Transparent"
+                        <Slider x:Name="sl_R" Margin="5,-3" Maximum="255"  ValueChanged="sl_R_ValueChanged" Grid.Row="3" Grid.ColumnSpan="2"/>
+                        <Label Content="Green Value" Margin="10,0,0,0" Grid.Row="4" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                        <TextBox x:Name="tb_ledG" Margin="2.5" Background="Transparent"
                          IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledG_TextChanged" MaxLines="1" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" MinWidth="25"/>
-                    <Slider x:Name="sl_G" Margin="5,-3" Maximum="255" ValueChanged="sl_G_ValueChanged" Grid.Row="5" Grid.ColumnSpan="2"/>
-
-                    <Label Content="Blue Value" Margin="10,0,0,0" Grid.Row="6" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                    <TextBox x:Name="tb_ledB" Margin="2.5" Background="Transparent"
+                        <Slider x:Name="sl_G" Margin="5,-3" Maximum="255" ValueChanged="sl_G_ValueChanged" Grid.Row="5" Grid.ColumnSpan="2"/>
+                        <Label Content="Blue Value" Margin="10,0,0,0" Grid.Row="6" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                        <TextBox x:Name="tb_ledB" Margin="2.5" Background="Transparent"
                     IsHitTestVisible="True" ToolTip="Bot Twitch Username" TextChanged="tb_ledB_TextChanged" MaxLines="1" Grid.Row="6" Grid.Column="2" MinWidth="25" HorizontalAlignment="Left"/>
-                    <Slider x:Name="sl_B" Margin="5,-3" Maximum="255" ValueChanged="sl_B_ValueChanged" Grid.Row="7" Grid.ColumnSpan="2"/>
-                </Grid>
-                <Grid Margin="2.5,5.5,2.5,2.5">
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Button x:Name="led_red" Content="red" Margin="2.5" Click="led_red_Click"/>
-                    <Button x:Name="led_green" Content="green" Margin="2.5" Click="led_green_Click"  Grid.Column="1"/>
-                    <Button x:Name="led_blue" Content="blue" Margin="2.5" Click="led_blue_Click" Grid.Column="2"/>
-                    <Button x:Name="led_pink" Content="pink" Margin="2.5" Click="led_pink_Click" Grid.Row="1"/>
-                    <Button x:Name="led_white" Content="white" Margin="2.5" Click="led_white_Click" Grid.Row="1" Grid.Column="1"/>
-                    <Button x:Name="led_orange" Content="orange" Margin="2.5" Click="led_orange_Click" Grid.Row="1" Grid.Column="2"/>
-                    <Button x:Name="led_yellow" Content="yellow" Margin="2.5" Click="led_yellow_Click" Grid.Row="2"/>
-                    <Button x:Name="led_cyan" Content="cyan" Margin="2.5" Click="led_cyan_Click" Grid.Row="2" Grid.Column="1"/>
-                    <Button x:Name="led_purple" Content="purple" Margin="2.5" Click="led_purple_Click" Grid.Row="2" Grid.Column="2"/>
-                    <ComboBox x:Name="cb_devices" Margin="2.5" SelectionChanged="cb_devices_SelectionChanged" Grid.Row="3">
-                        <ComboBoxItem Content="LED Wall"/>
-                        <ComboBoxItem Content="OnAir"/>
-                    </ComboBox>
-                    <Grid Grid.Row="3" Grid.Column="1" Margin="0,0,-1,0">
+                        <Slider x:Name="sl_B" Margin="5,-3" Maximum="255" ValueChanged="sl_B_ValueChanged" Grid.Row="7" Grid.ColumnSpan="2"/>
+                    </Grid>
+                    <Grid Margin="2.5,5.5,2.5,2.5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="led_red" Content="red" Margin="2.5" Click="led_red_Click"/>
+                        <Button x:Name="led_green" Content="green" Margin="2.5" Click="led_green_Click"  Grid.Column="1"/>
+                        <Button x:Name="led_blue" Content="blue" Margin="2.5" Click="led_blue_Click" Grid.Column="2"/>
+                        <Button x:Name="led_pink" Content="pink" Margin="2.5" Click="led_pink_Click" Grid.Row="1"/>
+                        <Button x:Name="led_white" Content="white" Margin="2.5" Click="led_white_Click" Grid.Row="1" Grid.Column="1"/>
+                        <Button x:Name="led_orange" Content="orange" Margin="2.5" Click="led_orange_Click" Grid.Row="1" Grid.Column="2"/>
+                        <Button x:Name="led_yellow" Content="yellow" Margin="2.5" Click="led_yellow_Click" Grid.Row="2"/>
+                        <Button x:Name="led_cyan" Content="cyan" Margin="2.5" Click="led_cyan_Click" Grid.Row="2" Grid.Column="1"/>
+                        <Button x:Name="led_purple" Content="purple" Margin="2.5" Click="led_purple_Click" Grid.Row="2" Grid.Column="2"/>
+                        <ComboBox x:Name="cb_devices" Margin="2.5" SelectionChanged="cb_devices_SelectionChanged" Grid.Row="3">
+                            <ComboBoxItem Content="LED Wall"/>
+                            <ComboBoxItem Content="OnAir"/>
+                        </ComboBox>
+                        <Grid Grid.Row="3" Grid.Column="1" Margin="0,0,-1,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="b_lightsOn" Content="On" Margin="2.5" Click="b_lightsOn_Click"/>
+                            <Button x:Name="b_lightsOff" Content="Off" Margin="2.5" Click="b_lightsOff_Click" Grid.Column="1"/>
+                        </Grid>
+                        <Button x:Name="led_apply" IsEnabled="True" Content="Apply" Margin="2.5" Click="led_apply_Click" Grid.Row="3" Grid.Column="2"/>
+                    </Grid>
+                </StackPanel>
+                <StackPanel>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="b_lightsOn" Content="On" Margin="2.5" Click="b_lightsOn_Click"/>
-                        <Button x:Name="b_lightsOff" Content="Off" Margin="2.5" Click="b_lightsOff_Click" Grid.Column="1"/>
+                        <Button Content="Button"/>
+
+                        <CheckBox Content="CheckBox" Grid.Row="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <Label Content="Label" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                     </Grid>
-                    <Button x:Name="led_apply" IsEnabled="True" Content="Apply" Margin="2.5" Click="led_apply_Click" Grid.Row="3" Grid.Column="2"/>
-                </Grid>
+
+                    <TextBox x:Name="tb_SoldierNames" TextWrapping="Wrap" Text="TextBox" />
+
+                </StackPanel>
             </StackPanel>
-
-
+            <TextBox x:Name="tb_DebugWindow" TextWrapping="Wrap" Width="120" Margin="5" Visibility="Visible"/>
 
         </StackPanel>
 
