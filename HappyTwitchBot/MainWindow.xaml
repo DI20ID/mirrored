@@ -150,7 +150,7 @@
                         <Button x:Name="led_apply" IsEnabled="True" Content="Apply" Margin="2.5" Click="led_apply_Click" Grid.Row="3" Grid.Column="2"/>
                     </Grid>
                 </StackPanel>
-                <StackPanel x:Name="sp_XCOM">
+                <StackPanel x:Name="sp_XCOM" MinHeight="100">
                     <Grid >
                         <Grid.RowDefinitions>
                             <RowDefinition/>
@@ -160,13 +160,22 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="b_xcom_connect" Content="Connect" Click="b_xcom_connect_Click"/>
+                        <Button x:Name="b_xcom_getSoldierNames" Content="GetSoldierNames" Click="b_xcom_getSoldierNames_Click" Grid.ColumnSpan="2"/>
 
                         <CheckBox Content="enable Game/Twitch communication" Grid.Row="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        <Label Content="Disconnected" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                     </Grid>
+                    <DataGrid Name="dg_SoldierGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding SoldierRank}" ClipboardContentBinding="{x:Null}" Header="Rank"/>
+                            <DataGridTextColumn Binding="{Binding FirstName}" ClipboardContentBinding="{x:Null}" Header="First"/>
+                            <DataGridTextColumn Binding="{Binding NickName}" ClipboardContentBinding="{x:Null}" Header="Nick"/>
+                            <DataGridTextColumn Binding="{Binding LastName}" ClipboardContentBinding="{x:Null}" Header="Last"/>
+                            <DataGridCheckBoxColumn Binding="{Binding AllowedtoSpeak}" ClipboardContentBinding="{x:Null}"/>
+                        </DataGrid.Columns>
 
-                    <TextBox x:Name="tb_SoldierNames" TextWrapping="Wrap"/>
+                    </DataGrid>
+
+
 
                 </StackPanel>
             </StackPanel>

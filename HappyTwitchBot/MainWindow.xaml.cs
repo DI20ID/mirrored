@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows;
@@ -18,6 +19,26 @@ using System.Windows.Media;
 
 namespace HappyTwitchBot
 {
+
+    public class Soldier
+    {
+        public string SoldierRank { get; set; }
+        public string FirstName { get; set; }
+        public string NickName { get; set; }
+        public string LastName { get; set; }
+        public bool AllowedtoSpeak { get; set; }
+
+    }
+
+
+
+
+
+
+
+
+    public delegate void XCOMCallback(string returnMessage);
+
     public partial class MainWindow : Window
     {
         
@@ -653,12 +674,38 @@ namespace HappyTwitchBot
             g_led.Visibility = Visibility.Collapsed;
         }
 
-        private void b_xcom_connect_Click(object sender, RoutedEventArgs e)
+        private void b_xcom_getSoldierNames_Click(object sender, RoutedEventArgs e)
         {
-            Thread newThread = new Thread(XCOMTcpClient.send_message_to_XCOM_thread);
-            newThread.Start("hello");
+           XCOMTcpClient XTC = new XCOMTcpClient(
+                "getSoldierNames",
+                new XCOMCallback(ResultCallback)
+               );
 
-            
+
+            Thread t = new Thread(new ThreadStart(XTC.send_message_to_XCOM_Thread));
+            t.Start();
+
+
+
+        }
+
+        public static void ResultCallback(string returnMessage)
+        {
+            Debug.WriteLine(
+                "Soldiers in Play: {0}", returnMessage);
+        }
+
+        public void populateSoldierGrid()
+        {
+            ObservableCollection<Soldier> custdata = new ObservableCollection<Soldier>()
+            {
+                new Soldier()
+                {
+                    SoldierRank = "Soldierrank1", FirstName = "first", NickName = "nick", LastName = "last",
+                    AllowedtoSpeak = true
+                }
+
+            };
         }
 
         
