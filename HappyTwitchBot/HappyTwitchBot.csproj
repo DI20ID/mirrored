@@ -82,6 +82,7 @@
     <Compile Include="TwitchAPI.cs" />
     <Compile Include="twitchcommand.cs" />
     <Compile Include="twitchuser.cs" />
+    <Compile Include="XCOMTcpClient.cs" />
     <Page Include="chat.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

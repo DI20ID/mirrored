@@ -653,22 +653,14 @@ namespace HappyTwitchBot
             g_led.Visibility = Visibility.Collapsed;
         }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private void b_xcom_connect_Click(object sender, RoutedEventArgs e)
         {
+            Thread newThread = new Thread(XCOMTcpClient.send_message_to_XCOM_thread);
+            newThread.Start("hello");
 
-        }
-
-        private void XcomTcpconnect()
-        {
             
         }
 
-        public void XCOMWatchDog()                     
-        {                                               
-
-           
-        }
-
-
+        
     }
 }
