@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace HappyTwitchBot
 {
@@ -14,23 +16,15 @@ namespace HappyTwitchBot
     {
 
         private string message;
-        private string returnMessage;
+        
 
-        // Delegate used to execute the callback method when the
-        // task is complete.
-        private XCOMCallback callback;
-
-
-        public XCOMTcpClient(string messagegot, XCOMCallback callbackDelegate)
+ 
+        public XCOMTcpClient(string messagegot)
         {
             message = messagegot;
-            callback = callbackDelegate;
         }
-
-
-
-
-        public void send_message_to_XCOM_Thread( )
+        
+        public async Task<string> send_message_to_XCOM_Thread( )
         {
             String responseData = String.Empty;
 
@@ -41,7 +35,7 @@ namespace HappyTwitchBot
                 // connected to the same address as specified by the server, port
                 // combination.
                 Int32 port = 3742;
-                TcpClient client = new TcpClient("localhost", port);
+                TcpClient xclient = new TcpClient("localhost", port);
 
                 // Translate the passed message into ASCII and store it as a Byte array.
                 Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
@@ -49,7 +43,7 @@ namespace HappyTwitchBot
                 // Get a client stream for reading and writing.
                 //  Stream stream = client.GetStream();
 
-                NetworkStream stream = client.GetStream();
+                NetworkStream stream = xclient.GetStream();
 
                 // Send the message to the connected TcpServer. 
                 stream.Write(data, 0, data.Length);
@@ -71,7 +65,7 @@ namespace HappyTwitchBot
 
                 // Close everything.
                 stream.Close();
-                client.Close();
+                xclient.Close();
             }
             catch (ArgumentNullException e)
             {
@@ -80,13 +74,11 @@ namespace HappyTwitchBot
             catch (SocketException e)
             {
                 Debug.WriteLine("SocketException: {0}", e);
+
+                return "";
+
             }
-
-            Debug.WriteLine("\n Press Enter to continue...");
-           
-
-            if (callback != null)
-                callback(responseData);
+            return responseData;
         }
     }
 }

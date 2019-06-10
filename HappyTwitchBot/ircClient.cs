@@ -5,6 +5,8 @@ using System.Security;
 using System.Threading;
 using System.Windows;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Markup.Localizer;
 
 
@@ -305,15 +307,19 @@ namespace HappyTwitchBot
                                 {
                                     if (messagearguments.Length > 3)
                                     {
-                                        LED.R = messagearguments[1]; LED.G = messagearguments[2]; LED.B = messagearguments[3];
+                                        LED.R = messagearguments[1];
+                                        LED.G = messagearguments[2];
+                                        LED.B = messagearguments[3];
                                         newsettings = true;
                                         LED.led = "null";
                                     }
+
                                     if (messagearguments[0] == ircPatterns.led)
                                     {
                                         LED.H = "255";
                                         LED.ip = "10.0.0.136";
                                     }
+
                                     if (messagearguments[0] == ircPatterns.onair)
                                     {
                                         LED.H = "100";
@@ -325,47 +331,65 @@ namespace HappyTwitchBot
                                     switch (messagearguments[1])
                                     {
                                         case ircPatterns.led_red:
-                                            LED.R = "255"; LED.G = "0"; LED.B = "0";
+                                            LED.R = "255";
+                                            LED.G = "0";
+                                            LED.B = "0";
                                             LED.led = "null";
                                             newsettings = true;
                                             break;
                                         case ircPatterns.led_green:
-                                            LED.R = "0"; LED.G = "255"; LED.B = "0";
+                                            LED.R = "0";
+                                            LED.G = "255";
+                                            LED.B = "0";
                                             LED.led = "null";
                                             newsettings = true;
                                             break;
                                         case ircPatterns.led_blue:
-                                            LED.R = "0"; LED.G = "0"; LED.B = "255";
+                                            LED.R = "0";
+                                            LED.G = "0";
+                                            LED.B = "255";
                                             LED.led = "null";
                                             newsettings = true;
                                             break;
                                         case ircPatterns.led_white:
-                                            LED.R = "255"; LED.G = "255"; LED.B = "255";
+                                            LED.R = "255";
+                                            LED.G = "255";
+                                            LED.B = "255";
                                             LED.led = "null";
                                             newsettings = true;
                                             break;
                                         case ircPatterns.led_pink:
-                                            LED.R = "255"; LED.G = "20"; LED.B = "147";
+                                            LED.R = "255";
+                                            LED.G = "20";
+                                            LED.B = "147";
                                             LED.led = "null";
                                             newsettings = true;
                                             break;
                                         case ircPatterns.led_orange:
-                                            LED.R = "255"; LED.G = "140"; LED.B = "0";
+                                            LED.R = "255";
+                                            LED.G = "140";
+                                            LED.B = "0";
                                             LED.led = "null";
                                             newsettings = true;
                                             break;
                                         case ircPatterns.led_yellow:
-                                            LED.R = "255"; LED.G = "255"; LED.B = "0";
+                                            LED.R = "255";
+                                            LED.G = "255";
+                                            LED.B = "0";
                                             LED.led = "null";
                                             newsettings = true;
                                             break;
                                         case ircPatterns.led_cyan:
-                                            LED.R = "0"; LED.G = "255"; LED.B = "255";
+                                            LED.R = "0";
+                                            LED.G = "255";
+                                            LED.B = "255";
                                             LED.led = "null";
                                             newsettings = true;
                                             break;
                                         case ircPatterns.led_purple:
-                                            LED.R = "102"; LED.G = "51"; LED.B = "153";
+                                            LED.R = "102";
+                                            LED.G = "51";
+                                            LED.B = "153";
                                             LED.led = "null";
                                             newsettings = true;
                                             break;
@@ -376,13 +400,58 @@ namespace HappyTwitchBot
                                         led.sendSettings();
                                     }
                                 }
+
                                 return;
                             }
+
                             if (messagearguments[0] == ircPatterns.hello)
                             {
                                 sendChatMessage("*waves*");
                                 //sendIrcMessage("GET / channel");
                                 return;
+                            }
+
+                            if (messagearguments[0] == ircPatterns.xsay)
+                            {
+                                string message = "";
+
+                                //for(int i = 1; i < messagearguments.Length; i++)
+                                //{
+                                //    message += messagearguments[i] + " ";
+                                //}
+                                foreach(string splinter in messagearguments)
+                                {
+                                    message += splinter + " ";
+                                }
+
+                                
+
+                                message = message.TrimEnd(' ');
+
+                                string[] tags = (pattern.Substring(0, pattern.IndexOf(ircPatterns.chatmessage))).Split(';');
+                                string name = "";
+                                foreach (string tag in tags
+                                ) //get name of command writer
+                                {
+                                    string prop = tag.Split('=')[0];
+                                    switch (prop)
+                                    {
+                                        case "display-name":
+                                        {
+                                            if (tag.Split('=').Length > 1)
+                                            {
+                                                name = tag.Split('=')[1];
+                                            }
+
+                                            continue;
+                                        }
+                                    }
+                                }
+
+                                message = name + " " + message;
+
+                                xcomMessage(message);
+                                Debug.WriteLine(message);
                             }
                         }
                     }
@@ -544,8 +613,24 @@ namespace HappyTwitchBot
             commanddic.Add(ircPatterns.hug, new twitchcommand(true, true, true, true, ircPatterns.d_hug));
             commanddic.Add(ircPatterns.led, new twitchcommand(true, true, true, true, ircPatterns.led));
             commanddic.Add(ircPatterns.onair, new twitchcommand(true, true, true, true, ircPatterns.led));
+            commanddic.Add(ircPatterns.xsay, new twitchcommand(true, true, true, true, ircPatterns.xsay));
         }
+        public async void xcomMessage(string message)
+        {
+            XCOMTcpClient XTC = new XCOMTcpClient(
+                message
+            );
 
+            //Thread t = new Thread(new ThreadStart(XTC.send_message_to_XCOM_Thread));
+            //string task = await Task.FromResult<string>(XTC.send_message_to_XCOM_Thread);
+
+
+            string returnMessage = await Task<string>.Run(() => XTC.send_message_to_XCOM_Thread());
+
+            Debug.WriteLine(returnMessage);
+
+            
+        }
         #endregion
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HappyTwitchBot"
         mc:Ignorable="d"
-        Title="Happy Twitch Bot" SizeToContent="WidthAndHeight" ContentRendered="MainWindow_OnContentRendered" Closing="Window_Closing" ResizeMode="CanResizeWithGrip">
+        Title="Happy Twitch Bot" SizeToContent="WidthAndHeight" ContentRendered="MainWindow_OnContentRendered" Closing="Window_Closing" ResizeMode="CanMinimize">
     <Window.Resources>
         <DataTemplate x:Key="template1">
             <Button Margin="10">
@@ -22,7 +22,7 @@
 
         
         <StackPanel Orientation="Horizontal">
-            <StackPanel>
+            <StackPanel x:Name="sp_Toolbar">
                 <ToggleButton x:Name="t_b_showdebugwindow" Content="showdebugwindow" Checked="T_b_showdebugwindow_OnChecked" Unchecked="T_b_showdebugwindow_OnUnchecked"/>
                 <ToggleButton x:Name="t_b_show_debug" Content="show debug"/>
                 <ToggleButton x:Name="t_b_show_chat" Content="show chat"/>
@@ -56,7 +56,7 @@
                     <Button x:Name="b_connect" Content="Connect" Margin="2.5,2.5,1.5,2.5" FontSize="15 px" BorderThickness="1" 
                     Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Focusable="False" Click="b_connect_Click" Grid.ColumnSpan="2" Grid.Row="3" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                 </Grid>
-                <StackPanel x:Name="g_led" Visibility="Visible" >
+                <StackPanel x:Name="g_led" Visibility="Collapsed" >
                     <Grid Margin="2.5,0,2.5,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
@@ -150,7 +150,7 @@
                         <Button x:Name="led_apply" IsEnabled="True" Content="Apply" Margin="2.5" Click="led_apply_Click" Grid.Row="3" Grid.Column="2"/>
                     </Grid>
                 </StackPanel>
-                <StackPanel x:Name="sp_XCOM" MinHeight="100">
+                <StackPanel x:Name="sp_XCOM">
                     <Grid >
                         <Grid.RowDefinitions>
                             <RowDefinition/>
@@ -161,26 +161,27 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <Button x:Name="b_xcom_getSoldierNames" Content="GetSoldierNames" Click="b_xcom_getSoldierNames_Click" Grid.ColumnSpan="2"/>
-
                         <CheckBox Content="enable Game/Twitch communication" Grid.Row="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Grid>
-                    <DataGrid Name="dg_SoldierGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                    <DataGrid Name="dg_SoldierGrid" ItemsSource="{Binding}" SelectedCellsChanged="Dg_SoldierGrid_OnSelectedCellsChanged" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" CanUserAddRows="False" EnableRowVirtualization="False" CanUserResizeRows="False">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Binding="{Binding SoldierRank}" ClipboardContentBinding="{x:Null}" Header="Rank"/>
-                            <DataGridTextColumn Binding="{Binding FirstName}" ClipboardContentBinding="{x:Null}" Header="First"/>
-                            <DataGridTextColumn Binding="{Binding NickName}" ClipboardContentBinding="{x:Null}" Header="Nick"/>
+                            <DataGridTextColumn Binding="{Binding SoldierRank}" ClipboardContentBinding="{x:Null}" Header="Rank" IsReadOnly="True"/>
+                            <DataGridTextColumn Binding="{Binding FirstName}" ClipboardContentBinding="{x:Null}" Header="First" IsReadOnly="True"/>
+                            <DataGridTextColumn Binding="{Binding NickName}" ClipboardContentBinding="{x:Null}" Header="Nick" IsReadOnly="True"/>
                             <DataGridTextColumn Binding="{Binding LastName}" ClipboardContentBinding="{x:Null}" Header="Last"/>
-                            <DataGridCheckBoxColumn Binding="{Binding AllowedtoSpeak}" ClipboardContentBinding="{x:Null}"/>
+                            <DataGridTextColumn Binding="{Binding isAlive}" ClipboardContentBinding="{x:Null}" Header="alive"/>
+                            <DataGridTemplateColumn >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox x:Name="isAllowedtoSpeak" IsChecked="{Binding AllowedtoSpeak, Mode=TwoWay}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
-
                     </DataGrid>
-
-
-
                 </StackPanel>
             </StackPanel>
             <TextBox x:Name="tb_DebugWindow" TextWrapping="Wrap" Width="120" Margin="5" Visibility="Visible"/>
-
         </StackPanel>
         <StatusBar DockPanel.Dock="Bottom" Margin="0,0,0,0">
             <Label x:Name="l_connectedstatus" Content="Text" Margin="0" Padding="-3"/>

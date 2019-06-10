@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
-using System.Security.Cryptography.X509Certificates;
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Threading;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
+
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
 
@@ -27,24 +28,15 @@ namespace HappyTwitchBot
         public string NickName { get; set; }
         public string LastName { get; set; }
         public bool AllowedtoSpeak { get; set; }
+        public bool isAlive { get; set; }
 
     }
-
-
-
-
-
-
-
-
-    public delegate void XCOMCallback(string returnMessage);
-
+    
     public partial class MainWindow : Window
     {
-        
         internal ircClient irc = new ircClient();
         internal Configuration AppConfig;
-        internal TcpClient xcomTcpClient;
+        
 
         private readonly string _sConfigurationPath = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
         
@@ -56,9 +48,9 @@ namespace HappyTwitchBot
 
         internal LED led = new LED();
 
-
         private StreamReader inputStream;
 
+        public ObservableCollection<Soldier> custdata;
 
         // entry point
         public MainWindow()
@@ -107,10 +99,6 @@ namespace HappyTwitchBot
             if (AppConfig.AppSettings.Settings["cb_remember"].Value != "")          //implement ty for boolean value of cb_remember
             {
 
-                
-
-                
-                
                 tb_username.Text = sUsername = AppConfig.AppSettings.Settings["sUsername"].Value;
                 tb_password.Password = sPassword = AppConfig.AppSettings.Settings["sPassword"].Value;
                 tb_channel.Text = sChannel = AppConfig.AppSettings.Settings["sChannel"].Value;
@@ -158,8 +146,13 @@ namespace HappyTwitchBot
             l_connectedstatus.Content = "Disconnected";
 
             tb_DebugWindow.Visibility = Visibility.Collapsed;
+            tb_DebugWindow.IsEnabled = false;
             g_led.Visibility = Visibility.Collapsed;
-            sp_XCOM.Visibility = Visibility.Collapsed;
+            g_led.IsEnabled = false;
+            sp_XCOM.Visibility = Visibility.Visible;
+            sp_XCOM.IsEnabled = true;
+            sp_Toolbar.Visibility = Visibility.Collapsed;
+            sp_Toolbar.IsEnabled = false;
 
         }
 
@@ -674,40 +667,86 @@ namespace HappyTwitchBot
             g_led.Visibility = Visibility.Collapsed;
         }
 
-        private void b_xcom_getSoldierNames_Click(object sender, RoutedEventArgs e)
+        private async void b_xcom_getSoldierNames_Click(object sender, RoutedEventArgs e)
         {
-           XCOMTcpClient XTC = new XCOMTcpClient(
-                "getSoldierNames",
-                new XCOMCallback(ResultCallback)
-               );
-
-
-            Thread t = new Thread(new ThreadStart(XTC.send_message_to_XCOM_Thread));
-            t.Start();
-
-
-
+            xcomMessage("getSoldierNames");
         }
 
-        public static void ResultCallback(string returnMessage)
+        public async void xcomMessage(string message)
         {
-            Debug.WriteLine(
-                "Soldiers in Play: {0}", returnMessage);
+            XCOMTcpClient XTC = new XCOMTcpClient(
+                message
+            );
+
+            //Thread t = new Thread(new ThreadStart(XTC.send_message_to_XCOM_Thread));
+            //string task = await Task.FromResult<string>(XTC.send_message_to_XCOM_Thread);
+
+
+            string returnMessage = await Task<string>.Run(() => XTC.send_message_to_XCOM_Thread());
+
+            Debug.WriteLine(returnMessage);
+
+            if(message == "getSoldierNames")
+                populateSoldierGrid(returnMessage);
         }
 
-        public void populateSoldierGrid()
+       
+        public void populateSoldierGrid(string soldierNames)
         {
-            ObservableCollection<Soldier> custdata = new ObservableCollection<Soldier>()
+            bool firstSoldier = true;
+            
+            soldierNames = soldierNames.Remove(soldierNames.Length - 1);
+            
+            string[] soldierSplit = soldierNames.Split(Convert.ToChar("\n"));
+            foreach (string soldier in soldierSplit)
             {
-                new Soldier()
+                if (firstSoldier)
                 {
-                    SoldierRank = "Soldierrank1", FirstName = "first", NickName = "nick", LastName = "last",
-                    AllowedtoSpeak = true
-                }
+                    string[] name = soldier.Split(Convert.ToChar("\t"));
 
-            };
+                    custdata = new ObservableCollection<Soldier>()
+                    {
+                        new Soldier()
+                        {
+                            SoldierRank = name[0],
+                            FirstName = name[1],
+                            NickName = name[2],
+                            LastName = name[3],
+                            isAlive = Convert.ToBoolean(name[4]),
+                            AllowedtoSpeak = Convert.ToBoolean(name[4])
+                        }
+
+                    };
+                    firstSoldier = false;
+                    
+                    Debug.WriteLine(soldier);
+                }
+                else
+                {
+                    string[] name = soldier.Split(Convert.ToChar("\t"));
+                    custdata.Add(
+
+                        new Soldier()
+                        {
+                            SoldierRank = name[0],
+                            FirstName = name[1],
+                            NickName = name[2],
+                            LastName = name[3],
+                            isAlive = Convert.ToBoolean(name[4]),
+                            AllowedtoSpeak = Convert.ToBoolean(name[4])
+                        });
+                    
+                    Debug.WriteLine(soldier);
+                }
+                
+            }
+            
+            dg_SoldierGrid.DataContext = custdata;
         }
 
-        
+        private void Dg_SoldierGrid_OnSelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+
+        }
     }
 }

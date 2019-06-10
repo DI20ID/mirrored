@@ -40,6 +40,8 @@ namespace HappyTwitchBot
         //custom patterns
         internal static string trigger = "!";
 
+        internal static string xsay = "xsay";
+
         internal static string led = "led";
         internal static string d_led = "Set LED color: '" + trigger + led + "' color" ;
         internal static string onair = "onair";

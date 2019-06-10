@@ -51,7 +51,7 @@ using System.Windows;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.2.0")]
+[assembly: AssemblyVersion("1.0.3.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 
@@ -67,8 +67,11 @@ using System.Windows;
 //          einige Initialisierungswerte in TextBoxen gelöscht (wieder implementieren -)
 //Implementierung der Speicherung der Verbindungsinformationen in HappyTwitchBot.exe.config
 //1.0.2.0
-//implementierung von GUI für Communikation zwischen XCOM 2 und Twitch
+//implementierung von GUI für Kommunikation zwischen XCOM 2 und Twitch
 //Toolbar zum ein und ausblenden verschiedener GUI Elemente
 //hinzufügen einer Textbox als Ausgabefenster
+//1.0.3.0
+//sämtliche GUI die zur Zeit nur teilweise funktionier oder garnicht deaktiviert
+//Kommunikation zwischen XCOM2 und Twitch hergestellt mit Befehl: !xsay
 
 
