@@ -1,0 +1,20 @@
+At its core this program is an irc client. It connects to twitch and reads the chat of the specified twitch channel.
+If a user in chat uses the !xsay command the programm checks with the aquired soldier list if the twitchuser is "present in game".
+For this to work the twitchuser needs to have the  !!!same!!!  dispayname as the soldiers last name.
+
+If you use the programm for the first time the executable will generate a config file. Here it will save username, channel and
+the authentication key you use (if you klick the "get password link" in the GUI and you are logged into twitch in your standard browser
+the key will be generated for that logged in twitch user).
+Furthermore it will generate a "sTimedelaybetweenmessages" key (value in ms) which controlls the amount of time a twitch chat
+user has to wait between messages. (twitch chat users will not get feedback if they message to often, the
+                                      message just wont trigger a flyover message)
+
+How to:
+install the XCOM 2 Mod - TwitchSoldierMessages 
+      copie all files into your XCOM2 mod directory - \\steamapps\common\XCOM 2\XComGame\Mods\TwitchSoldierMessages
+start the programm
+when you are in a tactical mission in XCOM2 press die "GetSoldierNames" button
+      -now a list of your soldiers will pop up at the bottom of the programm
+press the "Connect" button - the status bar should change from "Disconnected" to "Connected"
+
+enjoy
