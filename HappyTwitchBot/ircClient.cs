@@ -22,7 +22,7 @@ namespace HappyTwitchBot
         private string channel;         //irc channel to connect to (gets assigned in "public void joinRoom(string channel)" - on initialization channel = username
         private string ircString;       //string for continously reading irc message
 
-        public string logfilepath;
+        //public string logfilepath;
 
         public TcpClient tcpClient;         //tcpClient for TCP connection
         public bool ReadStreamEnabled;       //bool to enable continous Stream Reading
@@ -52,7 +52,7 @@ namespace HappyTwitchBot
             inputStream = new StreamReader(tcpClient.GetStream());          //create input irc stream
             outputStream = new StreamWriter(tcpClient.GetStream());         //create output irc stream
             ircString = "";                                                 //initialize ircString so it's not NULL
-            logfilepath = Path.GetTempPath() + "_HappyTwitchBot.log";                               //default log file path
+            //logfilepath = Path.GetTempPath() + "_HappyTwitchBot.log";                               //default log file path
             Login(username,password);
             userdic = new Dictionary<string, twitchuser>();
             InitialCommands();
@@ -107,7 +107,7 @@ namespace HappyTwitchBot
 
         public string capIRCString(string StrToCap)
         {
-            writetologfile(StrToCap);
+            //writetologfile(StrToCap);
             int capmark = StrToCap.IndexOf("#" + channel);
             StrToCap = StrToCap.Substring(capmark + channel.Length + 3);
             return StrToCap;
@@ -119,32 +119,32 @@ namespace HappyTwitchBot
             outputStream.Flush();
         }
 
-        public void writetologfile()
-        {
-            if (File.Exists(logfilepath))               //write logfile
-            {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@logfilepath, true))
-                    //write log file
-                {
-                    file.WriteLine(ircString);
-                    file.Close();
-                }
+        //public void writetologfile()
+        //{
+        //    if (File.Exists(logfilepath))               //write logfile
+        //    {
+        //        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@logfilepath, true))
+        //        //write log file
+        //        {
+        //            file.WriteLine(ircString);
+        //            file.Close();
+        //        }
 
-            }
-        }
-        public void writetologfile(string message)
-        {
-            if (File.Exists(logfilepath))               //write logfile
-            {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@logfilepath, true))
-                    //write log file
-                {
-                    file.WriteLine(message);
-                    file.Close();
-                }
+        //    }
+        //}
+        //public void writetologfile(string message)
+        //{
+        //    if (File.Exists(logfilepath))               //write logfile
+        //    {
+        //        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@logfilepath, true))
+        //            //write log file
+        //        {
+        //            file.WriteLine(message);
+        //            file.Close();
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
         public void WatchDog()                     // continously read irc input stream as long as ReadStream Enabled == true 
         {                                               // WARNING: if ReadStreamEnabled or Initialization is "true" - This function will wait on "inputStream.ReadLine()" until data is received
@@ -152,20 +152,20 @@ namespace HappyTwitchBot
             {
                 ircString = inputStream.ReadLine();
 
-                if (!File.Exists(logfilepath))              //check if logfile exists - otherwise create
-                {
-                    try
-                    {
-                        var log = File.Create(logfilepath);
-                        log.Close();
-                    }
-                    catch (Exception)
-                    {
+                //if (!File.Exists(logfilepath))              //check if logfile exists - otherwise create
+                //{
+                //    try
+                //    {
+                //        var log = File.Create(logfilepath);
+                //        log.Close();
+                //    }
+                //    catch (Exception)
+                //    {
 
-                    }
-                }
+                //    }
+                //}
 
-                writetologfile();
+                //writetologfile();
 
                 //Not included for now since it only works for smaller channels
                 /*
@@ -222,14 +222,14 @@ namespace HappyTwitchBot
                     MessageBox.Show("Login Failed. \nWrong password and/or username!\n\nDetails: " + ircString, "Error");
                     Initialization = false;
                     ReadStreamEnabled = false;
-                    writetologfile();
+                    //writetologfile();
                     continue;
                 }
                 if (ircString.Contains(ircPatterns.userlistend))
                 {
                     ReadStreamEnabled = true;
                     Initialization = false;
-                    writetologfile();
+                    //writetologfile();
                 }
             }
 
@@ -275,7 +275,7 @@ namespace HappyTwitchBot
         }
         public void PatternCheck(string pattern)
         {
-            writetologfile(ircPatterns.chatmessage);
+            //writetologfile(ircPatterns.chatmessage);
             if (pattern != null)
             {
                 if (pattern == ircPatterns.ping)            //ping reply to twitch (every 5 minutes)
@@ -423,9 +423,7 @@ namespace HappyTwitchBot
                                 {
                                     message += splinter + " ";
                                 }
-
                                 
-
                                 message = message.TrimEnd(' ');
 
                                 string[] tags = (pattern.Substring(0, pattern.IndexOf(ircPatterns.chatmessage))).Split(';');
@@ -448,20 +446,18 @@ namespace HappyTwitchBot
                                     }
                                 }
 
+                                message = message.Remove(40);
                                 message = name + " " + message;
 
-                                xcomMessage(message);
+                                xcomMessage(message, name);
                                 Debug.WriteLine(message);
                             }
                         }
                     }
                 }
-                
-            
-            
+               
             }
-
-
+            
             /*
             if (pattern.Contains("!hello"))
             {
@@ -615,22 +611,54 @@ namespace HappyTwitchBot
             commanddic.Add(ircPatterns.onair, new twitchcommand(true, true, true, true, ircPatterns.led));
             commanddic.Add(ircPatterns.xsay, new twitchcommand(true, true, true, true, ircPatterns.xsay));
         }
-        public async void xcomMessage(string message)
+        public async void xcomMessage(string message, string name)
         {
-            XCOMTcpClient XTC = new XCOMTcpClient(
-                message
-            );
+            try
+            {
+                foreach (Soldier soldier in MainWindow.custdata)
+                {
+                    if (name == soldier.LastName)
+                    {
+                        if (soldier.AllowedtoSpeak)
+                        {
+                            XCOMTcpClient XTC = new XCOMTcpClient(
+                                message
+                            );
+                            soldier.AllowedtoSpeak = false;
+                            //Thread t = new Thread(new ThreadStart(XTC.send_message_to_XCOM_Thread));
+                            //string task = await Task.FromResult<string>(XTC.send_message_to_XCOM_Thread);
 
-            //Thread t = new Thread(new ThreadStart(XTC.send_message_to_XCOM_Thread));
-            //string task = await Task.FromResult<string>(XTC.send_message_to_XCOM_Thread);
+
+                            string returnMessage = await Task<string>.Run(() => XTC.send_message_to_XCOM_Thread());
+                            await Task.Run(() => SoldierMessageTimer(name));
+                            Debug.WriteLine(returnMessage);
 
 
-            string returnMessage = await Task<string>.Run(() => XTC.send_message_to_XCOM_Thread());
-
-            Debug.WriteLine(returnMessage);
-
-            
+                        }
+                    }
+                }
+            }
+            catch (NullReferenceException e)
+            {
+               
+            }
         }
+
+        public async Task SoldierMessageTimer(string name)
+        {
+            foreach (Soldier soldier in MainWindow.custdata)
+            {
+                if (name == soldier.LastName)
+                {
+                    
+                    Thread.Sleep(MainWindow.Timedelaybetweenmessages);
+                    soldier.AllowedtoSpeak = true;
+                    return;
+                }
+            }
+        }
+
+
         #endregion
     }
 }

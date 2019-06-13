@@ -17,8 +17,6 @@ namespace HappyTwitchBot
 
         private string message;
         
-
- 
         public XCOMTcpClient(string messagegot)
         {
             message = messagegot;

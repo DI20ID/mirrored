@@ -161,22 +161,22 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <Button x:Name="b_xcom_getSoldierNames" Content="GetSoldierNames" Click="b_xcom_getSoldierNames_Click" Grid.ColumnSpan="2"/>
-                        <CheckBox Content="enable Game/Twitch communication" Grid.Row="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <CheckBox Content="enable Game/Twitch communication" Visibility="Collapsed" Grid.Row="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Grid>
-                    <DataGrid Name="dg_SoldierGrid" ItemsSource="{Binding}" SelectedCellsChanged="Dg_SoldierGrid_OnSelectedCellsChanged" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" CanUserAddRows="False" EnableRowVirtualization="False" CanUserResizeRows="False">
+                    <DataGrid Name="dg_SoldierGrid" x:FieldModifier="public" ItemsSource="{Binding}" SelectedCellsChanged="Dg_SoldierGrid_OnSelectedCellsChanged" AutoGenerateColumns="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" CanUserAddRows="False" EnableRowVirtualization="False" CanUserResizeRows="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Binding="{Binding SoldierRank}" ClipboardContentBinding="{x:Null}" Header="Rank" IsReadOnly="True"/>
                             <DataGridTextColumn Binding="{Binding FirstName}" ClipboardContentBinding="{x:Null}" Header="First" IsReadOnly="True"/>
                             <DataGridTextColumn Binding="{Binding NickName}" ClipboardContentBinding="{x:Null}" Header="Nick" IsReadOnly="True"/>
                             <DataGridTextColumn Binding="{Binding LastName}" ClipboardContentBinding="{x:Null}" Header="Last"/>
-                            <DataGridTextColumn Binding="{Binding isAlive}" ClipboardContentBinding="{x:Null}" Header="alive"/>
+                            <!--<DataGridTextColumn Binding="{Binding isAlive}" ClipboardContentBinding="{x:Null}" Header="alive"/>
                             <DataGridTemplateColumn >
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox x:Name="isAllowedtoSpeak" IsChecked="{Binding AllowedtoSpeak, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                            </DataGridTemplateColumn>-->
                         </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>

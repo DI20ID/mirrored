@@ -35,8 +35,9 @@ namespace HappyTwitchBot
     public partial class MainWindow : Window
     {
         internal ircClient irc = new ircClient();
+        internal Thread ircThread;
         internal Configuration AppConfig;
-        
+        public static int Timedelaybetweenmessages;
 
         private readonly string _sConfigurationPath = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
         
@@ -50,7 +51,7 @@ namespace HappyTwitchBot
 
         private StreamReader inputStream;
 
-        public ObservableCollection<Soldier> custdata;
+        public static ObservableCollection<Soldier> custdata;
 
         // entry point
         public MainWindow()
@@ -72,10 +73,11 @@ namespace HappyTwitchBot
                 string loc = Assembly.GetEntryAssembly().Location;
                 System.IO.File.WriteAllText(String.Concat(loc, ".Config"), sb.ToString());
                 AppConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                AppConfig.AppSettings.Settings.Add("User", "");
-                AppConfig.AppSettings.Settings.Add("Password", "");
-                AppConfig.AppSettings.Settings.Add("Channel", "");
+                AppConfig.AppSettings.Settings.Add("sUsername", "");
+                AppConfig.AppSettings.Settings.Add("sPassword", "");
+                AppConfig.AppSettings.Settings.Add("sChannel", "");
                 AppConfig.AppSettings.Settings.Add("cb_remember", "");
+                AppConfig.AppSettings.Settings.Add("sTimedelaybetweenmessages", "30000");
                 AppConfig.Save();
                 AppConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             }
@@ -96,6 +98,12 @@ namespace HappyTwitchBot
 
         private void ReadSettings()
         {
+            if (AppConfig.AppSettings.Settings["sTimedelaybetweenmessages"].Value != "")
+                Timedelaybetweenmessages =
+                    Convert.ToInt16(AppConfig.AppSettings.Settings["sTimedelaybetweenmessages"].Value);
+            else
+                Timedelaybetweenmessages = 30000;
+
             if (AppConfig.AppSettings.Settings["cb_remember"].Value != "")          //implement ty for boolean value of cb_remember
             {
 
@@ -120,7 +128,7 @@ namespace HappyTwitchBot
                 clientSettings.Add("sPassword", sPassword);
                 clientSettings.Add("sChannel", sChannel);
                 clientSettings.Add("cb_remember", cb_remember.IsChecked.ToString());
-
+                clientSettings.Add("sTimedelaybetweenmessages", Timedelaybetweenmessages.ToString());
                 foreach (string element in AppConfig.AppSettings.Settings.AllKeys)
                 {
                         AppConfig.AppSettings.Settings[element].Value = clientSettings[element];
@@ -154,7 +162,11 @@ namespace HappyTwitchBot
             sp_Toolbar.Visibility = Visibility.Collapsed;
             sp_Toolbar.IsEnabled = false;
 
+            
+
         }
+
+        
 
         #region EVENTHANDLER
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -169,7 +181,8 @@ namespace HappyTwitchBot
         // connect button click
         private void b_connect_Click(object sender, RoutedEventArgs e)
         {
-            if(cb_remember.IsChecked.Value) SaveSettings();
+            
+            if (cb_remember.IsChecked.Value) SaveSettings();
             else  ClearSettings();
             
             if (!this.connected)
@@ -219,7 +232,7 @@ namespace HappyTwitchBot
 
                 if (connected == true)
                 {
-                    Thread ircThread = new Thread(irc.WatchDog);
+                    ircThread = new Thread(irc.WatchDog);
                     ircThread.Start();
                     b_connect.IsEnabled = true;
                     l_connectedstatus.Foreground = Brushes.Green;
@@ -242,7 +255,7 @@ namespace HappyTwitchBot
                 {
                     if (irc.tcpClient.Available != 0)
                     {
-                        connected = false;
+                        
                     }
                     else
                     {
@@ -252,7 +265,7 @@ namespace HappyTwitchBot
                     }
                 }
 
-
+                
 
                 tb_username.IsEnabled = true;
                 tb_password.IsEnabled = true;
@@ -261,7 +274,8 @@ namespace HappyTwitchBot
                 l_connectedstatus.Foreground = Brushes.Red;
                 l_connectedstatus.Content = "Disconnected";
                 b_connect.Content = "Connect";
-
+                connected = false;
+                ircThread.Abort();
             }
         }
 
@@ -693,6 +707,9 @@ namespace HappyTwitchBot
        
         public void populateSoldierGrid(string soldierNames)
         {
+            if (soldierNames == "")
+                return;
+
             bool firstSoldier = true;
             
             soldierNames = soldierNames.Remove(soldierNames.Length - 1);
@@ -746,7 +763,7 @@ namespace HappyTwitchBot
 
         private void Dg_SoldierGrid_OnSelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
-
+            
         }
     }
 }
