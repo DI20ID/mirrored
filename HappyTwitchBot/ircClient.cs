@@ -593,22 +593,22 @@ namespace HappyTwitchBot
         {
             if(commanddic != null ) commanddic.Clear();
             commanddic = new Dictionary<string, twitchcommand>();
-            commanddic.Add(ircPatterns.hello, new twitchcommand(false, false, false, true, ircPatterns.d_hello));
-            commanddic.Add(ircPatterns.pause,new twitchcommand(false,false,false,true,ircPatterns.d_pause));
-            commanddic.Add(ircPatterns.unpause, new twitchcommand(false, false, false, true, ircPatterns.d_unpause));
-            commanddic.Add(ircPatterns.title, new twitchcommand(false, false, true, true, ircPatterns.d_title));
-            commanddic.Add(ircPatterns.title_set, new twitchcommand(false, false, true, true, ircPatterns.d_title_set));
-            commanddic.Add(ircPatterns.uptime, new twitchcommand(true, true, true, true, ircPatterns.d_uptime));
-            commanddic.Add(ircPatterns.bothelp, new twitchcommand(true, true, true, true, ircPatterns.d_bothelp));
-            commanddic.Add(ircPatterns.game, new twitchcommand(false, false, true, true, ircPatterns.d_game));
-            commanddic.Add(ircPatterns.game_set, new twitchcommand(false, false, true, true, ircPatterns.d_game_set));
-            commanddic.Add(ircPatterns.game_steam, new twitchcommand(false, false, true, true, ircPatterns.d_game_steam));
-            commanddic.Add(ircPatterns.steamid, new twitchcommand(false, false, false, true, ircPatterns.d_steamid));
-            commanddic.Add(ircPatterns.viewerstats, new twitchcommand(true, true, true, true, ircPatterns.d_viewerstats));
-            commanddic.Add(ircPatterns.ishere, new twitchcommand(true, true, true, true, ircPatterns.d_ishere));
-            commanddic.Add(ircPatterns.hug, new twitchcommand(true, true, true, true, ircPatterns.d_hug));
-            commanddic.Add(ircPatterns.led, new twitchcommand(true, true, true, true, ircPatterns.led));
-            commanddic.Add(ircPatterns.onair, new twitchcommand(true, true, true, true, ircPatterns.led));
+            //commanddic.Add(ircPatterns.hello, new twitchcommand(false, false, false, true, ircPatterns.d_hello));
+            //commanddic.Add(ircPatterns.pause,new twitchcommand(false,false,false,true,ircPatterns.d_pause));
+            //commanddic.Add(ircPatterns.unpause, new twitchcommand(false, false, false, true, ircPatterns.d_unpause));
+            //commanddic.Add(ircPatterns.title, new twitchcommand(false, false, true, true, ircPatterns.d_title));
+            //commanddic.Add(ircPatterns.title_set, new twitchcommand(false, false, true, true, ircPatterns.d_title_set));
+            //commanddic.Add(ircPatterns.uptime, new twitchcommand(true, true, true, true, ircPatterns.d_uptime));
+            //commanddic.Add(ircPatterns.bothelp, new twitchcommand(true, true, true, true, ircPatterns.d_bothelp));
+            //commanddic.Add(ircPatterns.game, new twitchcommand(false, false, true, true, ircPatterns.d_game));
+            //commanddic.Add(ircPatterns.game_set, new twitchcommand(false, false, true, true, ircPatterns.d_game_set));
+            //commanddic.Add(ircPatterns.game_steam, new twitchcommand(false, false, true, true, ircPatterns.d_game_steam));
+            //commanddic.Add(ircPatterns.steamid, new twitchcommand(false, false, false, true, ircPatterns.d_steamid));
+            //commanddic.Add(ircPatterns.viewerstats, new twitchcommand(true, true, true, true, ircPatterns.d_viewerstats));
+            //commanddic.Add(ircPatterns.ishere, new twitchcommand(true, true, true, true, ircPatterns.d_ishere));
+            //commanddic.Add(ircPatterns.hug, new twitchcommand(true, true, true, true, ircPatterns.d_hug));
+            //commanddic.Add(ircPatterns.led, new twitchcommand(true, true, true, true, ircPatterns.led));
+            //commanddic.Add(ircPatterns.onair, new twitchcommand(true, true, true, true, ircPatterns.led));
             commanddic.Add(ircPatterns.xsay, new twitchcommand(true, true, true, true, ircPatterns.xsay));
         }
         public async void xcomMessage(string message, string name)
